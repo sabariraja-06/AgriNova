@@ -1,0 +1,2019 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriNova: Smart Farming Companion</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Lucide icons for clean, modern symbols -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Load Google Font: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <style>
+        /* Base configuration for Neumorphism background and font */
+        :root {
+            --bg-light: #e0e5ec;
+            --shadow-dark: #b8bec9;
+            --shadow-light: #ffffff;
+            /* FINAL Green reduction: Deep, professional pine green/teal */
+            --primary-green: #014d40; /* Very dark, desaturated */
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-light);
+            color: #374151; /* Gray 700 */
+            scroll-behavior: smooth;
+        }
+
+        /* Custom Neumorphic Styles */
+        /* Extruded Card/Element */
+        .neumorphic-card {
+            border-radius: 1.5rem; /* rounded-3xl */
+            background: var(--bg-light);
+            box-shadow: 8px 8px 16px var(--shadow-dark), -8px -8px 16px var(--shadow-light);
+            transition: all 0.3s ease;
+        }
+
+        /* Simple Button (Extruded) */
+        .neumorphic-button {
+            border-radius: 1rem; /* rounded-xl */
+            background: var(--bg-light);
+            box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light);
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .neumorphic-button:hover {
+            box-shadow: 6px 6px 10px var(--shadow-dark), -6px -6px 10px var(--shadow-light);
+        }
+        /* Pressed/Active Button */
+        .neumorphic-button:active, .neumorphic-pressed {
+            box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light);
+        }
+        /* Primary Green CTA Button (Shadows adjusted for softer look) */
+        .neumorphic-cta {
+            background-color: var(--primary-green);
+            color: white;
+            border-radius: 1rem; /* rounded-xl */
+            box-shadow: 3px 3px 6px #01352c, -3px -3px 6px #016554; /* Subtle, deep shadows */
+        }
+        .neumorphic-cta:hover {
+            filter: brightness(1.1);
+        }
+        .neumorphic-cta:active {
+            box-shadow: inset 3px 3px 6px #01352c, inset -3px -3px 6px #016554;
+        }
+
+        /* Input Field */
+        .neumorphic-input {
+            border-radius: 0.75rem; /* rounded-lg */
+            background: var(--bg-light);
+            box-shadow: inset 2px 2px 5px var(--shadow-dark), inset -2px -2px 5px var(--shadow-light);
+            padding: 0.75rem 1rem;
+            width: 100%;
+            border: none;
+            outline: none;
+        }
+
+        /* Chat Specific Styles */
+        #chat-window {
+            height: 300px; /* Fixed height for chat area */
+            overflow-y: auto;
+            border-radius: 1rem;
+            box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light); /* Sunken look */
+            background-color: #f0f4f8; /* Slightly lighter background for the chat area */
+        }
+        .user-message {
+            background-color: var(--primary-green);
+            color: white;
+            border-radius: 1rem 1rem 0 1rem;
+            max-width: 80%;
+            margin-left: auto;
+        }
+        .ai-message {
+            background-color: #ffffff;
+            color: #374151;
+            border-radius: 1rem 1rem 1rem 0;
+            max-width: 80%;
+            margin-right: auto;
+            box-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        /* Scroll-to-Top Button */
+        #scroll-to-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+            z-index: 1000;
+        }
+        #scroll-to-top.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Temporary Notification */
+        #notification-box {
+            position: fixed;
+            top: 5rem;
+            right: 1rem;
+            transform: translateY(-100%);
+            transition: transform 0.5s ease-out;
+            z-index: 2000;
+        }
+        #notification-box.show {
+            transform: translateY(0);
+        }
+
+        /* Filter Tab Style */
+        .filter-tab {
+            padding: 0.75rem 1.5rem;
+            border-radius: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .filter-tab.active {
+            box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light);
+            background-color: #d1d9e6;
+            color: var(--primary-green);
+        }
+        
+        /* Market Trend Button */
+        .market-trend-btn {
+            @apply neumorphic-button text-sm px-4 py-2 font-medium;
+        }
+
+
+        /* Smooth scroll for sticky header */
+        .sticky-header {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05); /* Soft line under the header */
+        }
+
+        /* SDG Icon colors */
+        .sdg-2 { color: #d71920; }
+        .sdg-4 { color: #c5192d; }
+        .sdg-8 { color: #9d232a; }
+        .sdg-9 { color: #f46924; }
+        .sdg-12 { color: #bf8b2e; }
+        .sdg-13 { color: #3f7e44; }
+
+        /* Ensure icon replacement works */
+        .icon { display: inline-block; }
+
+        /* Custom Quiz Styles for Neumorphism Integration */
+        .quiz-option.selected {
+            @apply bg-green-500 text-white shadow-inner;
+            box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light);
+        }
+        .quiz-card-header {
+             @apply flex justify-between items-center mb-4;
+        }
+        .quiz-points {
+            @apply bg-amber-500 text-gray-800 px-3 py-1 rounded-full text-xs font-bold flex items-center space-x-1;
+        }
+        .quiz-progress-bar {
+            @apply bg-green-500 h-full transition-all duration-500 ease-out;
+        }
+    </style>
+</head>
+<body onload="lucide.createIcons()" onscroll="toggleScrollButton()">
+
+    <!-- Temporary Notification Box -->
+    <div id="notification-box" class="neumorphic-card p-4 rounded-xl text-sm font-semibold text-gray-700 shadow-xl bg-white/90">
+        <div class="flex items-center space-x-2">
+            <i data-lucide="info" class="w-4 h-4 text-green-500"></i>
+            <span id="notification-message"></span>
+        </div>
+    </div>
+    
+    <!-- Scroll to Top Button -->
+    <button id="scroll-to-top" onclick="scrollToTop()" class="neumorphic-button p-4 text-green-600 rounded-full">
+        <i data-lucide="arrow-up" class="w-6 h-6"></i>
+    </button>
+
+    <!-- A. Header (Sticky Navigation) -->
+    <header id="header" class="sticky top-0 z-50 py-4 neumorphic-card rounded-none sticky-header">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
+            <!-- Logo -->
+            <a href="#home" class="flex items-center space-x-2 text-xl font-bold text-gray-800">
+                <i data-lucide="leaf" class="text-green-600 w-6 h-6"></i>
+                <span class="text-2xl tracking-tight">AgriNova</span>
+            </a>
+
+            <!-- Navigation Links (Hidden on mobile, shown on desktop) -->
+            <nav class="hidden lg:flex space-x-8 text-gray-600 font-medium">
+                <a href="#features" class="hover:text-green-600 transition duration-150">Features</a>
+                <a href="#metrics" class="hover:text-green-600 transition duration-150">Metrics</a>
+                <a href="#library" class="hover:text-green-600 transition duration-150">Library</a>
+                <a href="#demo" class="hover:text-green-600 transition duration-150">Profit Analyzer</a>
+                <a href="#diagnosis" class="hover:text-green-600 transition duration-150">Diagnosis</a>
+                <a href="#planner" class="hover:text-green-600 transition duration-150">Planner</a>
+                <a href="#quiz" class="hover:text-green-600 transition duration-150 font-bold text-orange-600">Quiz</a>
+                <a href="#optimization" class="hover:text-green-600 transition duration-150 font-bold text-purple-600">Optimizer</a>
+                <a href="#gamification" class="hover:text-green-600 transition duration-150">Rewards</a>
+            </nav>
+
+            <!-- CTA: Download the App -->
+            <button onclick="showNotification('AgriNova App download link is coming soon!')" class="hidden sm:block px-6 py-2 text-sm font-semibold neumorphic-cta">
+                Download the App
+            </button>
+            
+            <!-- Mobile Menu Button (Placeholder for actual navigation) -->
+            <button class="lg:hidden text-gray-600 neumorphic-button p-2 rounded-xl">
+                <i data-lucide="menu" class="w-6 h-6"></i>
+            </button>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-24">
+
+        <!-- B. Hero Section (Home) -->
+        <section id="home" class="pt-10 pb-20 grid lg:grid-cols-2 gap-12 items-center">
+            <div class="space-y-6">
+                <h1 class="text-5xl md:text-6xl font-extrabold tracking-tight text-gray-900 leading-tight">
+                    AgriNova: <span class="text-green-600">Smart Farming</span> Companion
+                </h1>
+                <p class="text-xl text-gray-600">
+                    Empowering farmers with AI-driven knowledge, decision-support, and interactive learning to maximize profitability and sustainability.
+                </p>
+                <button onclick="showNotification('AgriNova App download link is coming soon!')" class="mt-8 px-10 py-4 text-lg font-bold neumorphic-cta">
+                    Download AgriNova Now
+                </button>
+            </div>
+            
+            <!-- Visual: Conceptual Neumorphic Phone Frame -->
+            <div class="neumorphic-card p-4 mx-auto max-w-sm w-full lg:max-w-md">
+                <div class="bg-white h-[400px] rounded-2xl flex items-center justify-center border-4 border-gray-300 shadow-inner">
+                    <div class="text-center p-4">
+                        <i data-lucide="smartphone" class="w-12 h-12 mx-auto text-green-500 mb-2"></i>
+                        <p class="text-gray-500 font-semibold">App Interface Preview</p>
+                        <p class="text-sm text-gray-400">Neumorphic elements inside the app!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- C. Features Section (The Four Pillars) -->
+        <section id="features" class="pt-10">
+            <h2 class="text-4xl font-bold text-center mb-16 text-gray-800">Core Features</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                
+                <!-- Feature Card 1: Farmer's Library -->
+                <div class="neumorphic-card p-6 text-center space-y-4">
+                    <i data-lucide="library" class="w-10 h-10 text-blue-500 mx-auto neumorphic-card p-3 rounded-xl"></i>
+                    <h3 class="text-xl font-semibold">Farmer's Library</h3>
+                    <p class="text-gray-600 text-sm">Digital content on modern tools, technologies, and **sustainable farming practices**.</p>
+                </div>
+
+                <!-- Feature Card 2: Crop Prediction -->
+                <div class="neumorphic-card p-6 text-center space-y-4">
+                    <i data-lucide="trending-up" class="w-10 h-10 text-green-500 mx-auto neumorphic-card p-3 rounded-xl"></i>
+                    <h3 class="text-xl font-semibold">Crop Prediction</h3>
+                    <p class="text-gray-600 text-sm">Soil & weather-based machine learning **recommendations for optimal crop selection and profitability**.</p>
+                </div>
+
+                <!-- Feature Card 3: Chatbot -->
+                <div class="neumorphic-card p-6 text-center space-y-4">
+                    <i data-lucide="messages-square" class="w-10 h-10 text-gray-500 mx-auto neumorphic-card p-3 rounded-xl"></i>
+                    <h3 class="text-xl font-semibold">24/7 AI Chatbot</h3>
+                    <p class="text-gray-600 text-sm">Instant, AI-driven assistance for real-time problem-solving and **immediate support on crop issues**.</p>
+                </div>
+
+                <!-- Feature Card 4: Gamified Learning -->
+                <div class="neumorphic-card p-6 text-center space-y-4">
+                    <i data-lucide="puzzle" class="w-10 h-10 text-amber-500 mx-auto neumorphic-card p-3 rounded-xl"></i>
+                    <h3 class="text-xl font-semibold">Gamified Learning</h3>
+                    <p class="text-gray-600 text-sm">Engaging quizzes and rewards systems to **build critical agricultural skills**, track progress, and earn achievements.</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- D. Dynamic Metrics Viewer (Interactive Feature - UPGRADED DETAILS) -->
+        <section id="metrics" class="pt-10">
+            <h2 class="text-4xl font-bold text-center mb-12 text-gray-800">Live Farm Metrics Simulation</h2>
+            <p class="text-center text-gray-600 mb-8 max-w-3xl mx-auto">AgriNova integrates with IoT sensors to provide real-time field data. Click the button to simulate a live data refresh.</p>
+
+            <div class="neumorphic-card p-8 space-y-8 max-w-6xl mx-auto">
+                <div id="metric-viewer" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-4 text-center">
+                    
+                    <div id="card-moisture" class="neumorphic-card p-3 rounded-xl space-y-2">
+                        <i data-lucide="droplet" class="w-8 h-8 mx-auto text-blue-500"></i>
+                        <p class="text-sm font-medium text-gray-500">Soil Moisture</p>
+                        <p id="metric-moisture" class="text-xl font-bold text-blue-600">65%</p>
+                        <p id="status-moisture" class="text-xs text-green-600">Status: Optimal</p>
+                    </div>
+
+                    <div id="card-temp" class="neumorphic-card p-3 rounded-xl space-y-2">
+                        <i data-lucide="thermometer" class="w-8 h-8 mx-auto text-red-500"></i>
+                        <p class="text-sm font-medium text-gray-500">Temperature</p>
+                        <p id="metric-temp" class="text-xl font-bold text-red-600">24.5 °C</p>
+                        <p id="status-temp" class="text-xs text-red-500">Trend: Rising</p>
+                    </div>
+
+                    <div id="card-ec" class="neumorphic-card p-3 rounded-xl space-y-2">
+                        <i data-lucide="gauge" class="w-8 h-8 mx-auto text-indigo-500"></i>
+                        <p class="text-sm font-medium text-gray-500">EC (Salinity)</p>
+                        <p id="metric-ec" class="text-xl font-bold text-indigo-600">1.2 dS/m</p>
+                        <p id="status-ec" class="text-xs text-green-600">Range: Low/Normal</p>
+                    </div>
+                    
+                    <div id="card-ph" class="neumorphic-card p-3 rounded-xl space-y-2">
+                        <i data-lucide="test-tube" class="w-8 h-8 mx-auto text-yellow-600"></i>
+                        <p class="text-sm font-medium text-gray-500">Soil pH</p>
+                        <p id="metric-ph" class="text-xl font-bold text-yellow-700">6.2</p>
+                        <p id="status-ph" class="text-xs text-orange-500">Range: Acidic</p>
+                    </div>
+
+                    <div id="card-humidity" class="neumorphic-card p-3 rounded-xl space-y-2">
+                        <i data-lucide="cloud-rain" class="w-8 h-8 mx-auto text-cyan-500"></i>
+                        <p class="text-sm font-medium text-gray-500">Air Humidity</p>
+                        <p id="metric-humidity" class="text-xl font-bold text-cyan-600">72%</p>
+                        <p id="status-humidity" class="text-xs text-yellow-600">Level: High</p>
+                    </div>
+
+                    <div id="card-sun" class="neumorphic-card p-3 rounded-xl space-y-2">
+                        <i data-lucide="sun" class="w-8 h-8 mx-auto text-orange-500"></i>
+                        <p class="text-sm font-medium text-gray-500">Sunlight (PAR)</p>
+                        <p id="metric-sun" class="text-xl font-bold text-orange-600">1200 Lux</p>
+                        <p id="status-sun" class="text-xs text-green-600">Target: Achieved</p>
+                    </div>
+
+                    <div id="card-latency" class="neumorphic-card p-3 rounded-xl space-y-2">
+                        <i data-lucide="signal" class="w-8 h-8 mx-auto text-gray-500"></i>
+                        <p class="text-sm font-medium text-gray-500">Data Latency</p>
+                        <p id="metric-latency" class="text-xl font-bold text-gray-800">1.8 s</p>
+                        <p id="status-latency" class="text-xs text-green-600">Network: Stable</p>
+                    </div>
+                </div>
+
+                <button id="refresh-metrics-btn" onclick="refreshMetrics()" class="w-full py-3 font-bold neumorphic-button rounded-xl text-gray-700">
+                    <i data-lucide="refresh-cw" class="w-4 h-4 mr-2 inline-block"></i>
+                    Refresh Data (Simulated)
+                </button>
+            </div>
+        </section>
+
+        <!-- E. Filterable Farmer's Library Explorer -->
+        <section id="library" class="pt-10">
+            <h2 class="text-4xl font-bold text-center mb-12 text-gray-800">Farmer's Library Explorer</h2>
+            <p class="text-center text-gray-600 mb-8 max-w-3xl mx-auto">Explore high-quality, categorized educational modules instantly.</p>
+
+            <div class="max-w-4xl mx-auto">
+                <!-- Filter Tabs -->
+                <div class="flex flex-wrap justify-center space-x-4 mb-8">
+                    <button id="tab-pest" class="filter-tab neumorphic-button active" onclick="setLibraryContent('pest', this)">
+                        <i data-lucide="bug" class="w-4 h-4 mr-2 inline-block"></i> Pest Control
+                    </button>
+                    <button id="tab-soil" class="filter-tab neumorphic-button" onclick="setLibraryContent('soil', this)">
+                        <i data-lucide="droplet" class="w-4 h-4 mr-2 inline-block"></i> Soil Health
+                    </button>
+                    <button id="tab-tools" class="filter-tab neumorphic-button" onclick="setLibraryContent('tools', this)">
+                        <i data-lucide="wrench" class="w-4 h-4 mr-2 inline-block"></i> Modern Tools
+                    </button>
+                </div>
+
+                <!-- Content Display -->
+                <div class="neumorphic-card p-8 rounded-3xl space-y-4">
+                    <h3 id="library-title" class="text-2xl font-semibold text-green-700">Pest Control Essentials</h3>
+                    <p id="library-description" class="text-gray-600">Learn how to identify common crop pests like aphids and bollworms. We provide integrated pest management (IPM) strategies focusing on biological controls and minimal chemical use. Key focus on early detection via image recognition.</p>
+                    <ul id="library-list" class="list-disc pl-5 text-gray-700 space-y-1 text-sm">
+                        <li>Module 1: Visual Pest Identification Guide (Video)</li>
+                        <li>Module 2: Organic Pesticide Recipes</li>
+                        <li>Module 3: Best Practices for Crop Rotation</li>
+                    </ul>
+                    <button onclick="showNotification('Module link is only active in the full app.')" class="neumorphic-cta px-6 py-2 text-sm font-semibold rounded-xl">
+                        Start Learning Now
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- F. Interactive Demo: Comprehensive Profitability Analyzer (UPGRADED LOGIC/DETAILS) -->
+        <section id="demo" class="pt-10">
+            <h2 class="text-4xl font-bold text-center mb-12 text-gray-800">Comprehensive Profitability Analyzer</h2>
+            <p class="text-center text-gray-600 mb-8 max-w-3xl mx-auto">Get an AI recommendation and analyze the estimated economic viability based on your soil data and market metrics.</p>
+
+            <div class="grid lg:grid-cols-2 gap-12 items-start">
+                
+                <!-- Input Form (Expanded) -->
+                <div class="neumorphic-card p-8 space-y-6">
+                    <h3 class="text-2xl font-semibold text-gray-700 mb-4">Input Farm, Climate & Economic Data</h3>
+                    
+                    <!-- Market Trends Simulator -->
+                    <div class="space-y-3 p-4 neumorphic-card text-center">
+                        <h4 class="text-base font-semibold text-gray-700">Simulate Market Trends:</h4>
+                        <div class="flex flex-wrap justify-center gap-3">
+                            <button type="button" onclick="applyMarketTrend('highDemand', this)" class="market-trend-btn text-green-600"><i data-lucide="chevrons-up" class="w-4 h-4 mr-1 inline-block"></i> High Demand</button>
+                            <button type="button" onclick="applyMarketTrend('costSpike', this)" class="market-trend-btn text-red-600"><i data-lucide="indian-rupee" class="w-4 h-4 mr-1 inline-block"></i> Input Costs Spike</button>
+                            <button type="button" onclick="applyMarketTrend('normal', this)" class="market-trend-btn text-gray-600"><i data-lucide="circle-dot" class="w-4 h-4 mr-1 inline-block"></i> Normal Market</button>
+                        </div>
+                    </div>
+
+                    <form id="demo-form" class="space-y-4">
+                        
+                        <!-- NEW: Geographical and Season Inputs -->
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label for="input-state" class="block text-sm font-medium mb-1">State/Region (India)</label>
+                                <select id="input-state" class="neumorphic-input cursor-pointer" onchange="updateRainfallPlaceholder()">
+                                    <option value="">Select State</option>
+                                    <!-- Options populated by JS -->
+                                </select>
+                            </div>
+                            <div>
+                                <label for="input-season" class="block text-sm font-medium mb-1">Crop Season</label>
+                                <select id="input-season" class="neumorphic-input cursor-pointer">
+                                    <option value="monsoon">Monsoon (Kharif)</option>
+                                    <option value="winter">Winter (Rabi)</option>
+                                    <option value="summer">Summer (Zaid)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label for="input-soil-type" class="block text-sm font-medium mb-1">Soil Type</label>
+                                <select id="input-soil-type" class="neumorphic-input cursor-pointer">
+                                    <option value="black">Black Soil (Regur)</option>
+                                    <option value="alluvial">Alluvial Soil</option>
+                                    <option value="red">Red Soil</option>
+                                    <option value="laterite">Laterite Soil</option>
+                                    <option value="sandy">Sandy Soil</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="input-rainfall" class="block text-sm font-medium mb-1">Annual Rainfall (mm)</label>
+                                <input type="number" id="input-rainfall" value="1000" class="neumorphic-input" required placeholder="1000">
+                            </div>
+                        </div>
+
+
+                        <!-- NPK Ratio Inputs -->
+                        <div class="grid grid-cols-3 gap-4">
+                            <div>
+                                <label for="input-n" class="block text-sm font-medium mb-1">Nitrogen (N) - (Kg/Ha)</label>
+                                <input type="number" id="input-n" value="90" class="neumorphic-input" required>
+                            </div>
+                            <div>
+                                <label for="input-p" class="block text-sm font-medium mb-1">Phosphorus (P) - (Kg/Ha)</label>
+                                <input type="number" id="input-p" value="42" class="neumorphic-input" required>
+                            </div>
+                            <div>
+                                <label for="input-k" class="block text-sm font-medium mb-1">Potassium (K) - (Kg/Ha)</label>
+                                <input type="number" id="input-k" value="43" class="neumorphic-input" required>
+                            </div>
+                        </div>
+
+                        <!-- Climate & Economic Inputs -->
+                        <div>
+                            <label for="input-temp" class="block text-sm font-medium mb-1">Current Temperature (°C)</label>
+                            <input type="number" id="input-temp" value="20" class="neumorphic-input" required>
+                        </div>
+                        
+                        <div>
+                            <label for="input-price" class="block text-sm font-medium mb-1">Market Price (per Kg, mock)</label>
+                            <input type="number" id="input-price" value="50" class="neumorphic-input" required>
+                        </div>
+                        <div>
+                            <label for="input-cost" class="block text-sm font-medium mb-1">Cost of Cultivation (per Hectare, mock)</label>
+                            <input type="number" id="input-cost" value="50000" class="neumorphic-input" required>
+                        </div>
+
+                        <button type="submit" id="recommend-btn" class="w-full mt-6 py-3 font-bold text-lg neumorphic-cta">
+                            Analyze Profitability
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Output Display (Expanded) -->
+                <div id="demo-output" class="neumorphic-card p-8 space-y-6 hidden">
+                    <h3 class="text-2xl font-semibold text-green-700 flex items-center space-x-2">
+                        <i data-lucide="trending-up" class="w-6 h-6"></i>
+                        <span>Comprehensive Analysis</span>
+                    </h3>
+                    
+                    <div class="space-y-4">
+                        <div class="neumorphic-card p-4 rounded-xl">
+                            <p class="text-sm font-medium text-gray-500">Recommended Crop:</p>
+                            <p id="output-crop" class="text-2xl font-bold text-green-600">...</p>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="neumorphic-card p-4 rounded-xl">
+                                <p class="text-sm font-medium text-gray-500">Estimated Yield (Kg/Ha):</p>
+                                <p id="output-yield" class="text-xl font-bold text-purple-600">...</p>
+                            </div>
+                            <div class="neumorphic-card p-4 rounded-xl">
+                                <p class="text-sm font-medium text-gray-500">Net Profit (Rupees, mock):</p>
+                                <p id="output-net-profit" class="text-xl font-bold text-indigo-600">...</p>
+                            </div>
+                        </div>
+                        <div class="neumorphic-card p-4 rounded-xl">
+                            <p class="text-sm font-medium text-gray-500">Overall Profitability Grade:</p>
+                            <p id="output-profit" class="text-2xl font-bold text-blue-600">...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Initial Placeholder for Output -->
+                <div id="initial-output-placeholder" class="neumorphic-card p-8 flex items-center justify-center h-full min-h-[300px]">
+                    <div class="text-center text-gray-500">
+                        <i data-lucide="target" class="w-10 h-10 mx-auto mb-2"></i>
+                        <p>Input your parameters and click 'Analyze Profitability' to see results.</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+        
+        <!-- G. Interactive Feature: Pest & Disease Diagnosis Simulator -->
+        <section id="diagnosis" class="pt-10">
+            <h2 class="text-4xl font-bold text-center mb-12 text-gray-800">Pest & Disease Diagnosis Simulator</h2>
+            <p class="text-center text-gray-600 mb-8 max-w-3xl mx-auto">Select a primary symptom to simulate the AI's instant diagnostic report and recommended action plan.</p>
+
+            <div class="grid lg:grid-cols-2 gap-12 items-start">
+                
+                <!-- Symptom Input -->
+                <div class="neumorphic-card p-8 space-y-6">
+                    <h3 class="text-2xl font-semibold text-gray-700 mb-4">Select Primary Symptom</h3>
+                    <label for="symptom-select" class="block text-sm font-medium mb-1">Observed Plant Issue:</label>
+                    <select id="symptom-select" class="neumorphic-input cursor-pointer">
+                        <option value="yellowing">Yellowing Leaves (Chlorosis)</option>
+                        <option value="spots">Small Dark Spots on Leaves/Fruit</option>
+                        <option value="wilt">Sudden Plant Wilting/Drooping</option>
+                        <option value="residue">Sticky Residue or Webbing</option>
+                        <option value="holes">Irregular Holes on Leaves</option>
+                    </select>
+
+                    <button onclick="runDiagnosis()" id="diagnosis-btn" class="w-full mt-6 py-3 font-bold text-lg neumorphic-cta">
+                        Run AI Diagnosis
+                    </button>
+                </div>
+
+                <!-- Diagnosis Output -->
+                <div id="diagnosis-output" class="neumorphic-card p-8 space-y-6">
+                    <h3 class="text-2xl font-semibold text-red-700 flex items-center space-x-2">
+                        <i data-lucide="alert-triangle" class="w-6 h-6"></i>
+                        <span id="diagnosis-title">AI Diagnosis Report</span>
+                    </h3>
+                    
+                    <div class="space-y-3">
+                        <p class="text-sm font-medium text-gray-500">Likely Cause:</p>
+                        <p id="diagnosis-cause" class="text-xl font-bold text-gray-800">Awaiting Simulation...</p>
+                    </div>
+                    <div class="space-y-3">
+                        <p class="text-sm font-medium text-gray-500">Recommended Action:</p>
+                        <p id="diagnosis-action" class="text-base text-gray-600">Select a symptom and click 'Run AI Diagnosis' to see immediate mitigation steps.</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+        
+        <!-- NEW INTERACTIVE FEATURE: Crop Calendar & Task Planner (UPGRADED DETAILS) -->
+        <section id="planner" class="pt-10">
+            <h2 class="text-4xl font-bold text-center mb-12 text-gray-800">Crop Calendar & Task Planner</h2>
+            <p class="text-center text-gray-600 mb-8 max-w-3xl mx-auto">Select a crop to view the AI-recommended cultivation schedule and current required tasks based on the season.</p>
+
+            <div class="grid lg:grid-cols-2 gap-12 items-start">
+                
+                <!-- Input Selector -->
+                <div class="neumorphic-card p-8 space-y-6">
+                    <h3 class="text-2xl font-semibold text-gray-700 mb-4">Select Crop and View Plan</h3>
+                    <label for="crop-select" class="block text-sm font-medium mb-1">Select Crop:</label>
+                    <select id="crop-select" class="neumorphic-input cursor-pointer">
+                        <option value="rice">Paddy (Rice)</option>
+                        <option value="wheat">Wheat</option>
+                        <option value="tomato">Tomato</option>
+                        <option value="cotton">Cotton</option>
+                        <option value="chilli">Chilli</option>
+                    </select>
+
+                    <button onclick="viewCropPlan()" id="planner-btn" class="w-full mt-6 py-3 font-bold text-lg neumorphic-cta">
+                        View Cultivation Plan
+                    </button>
+                </div>
+
+                <!-- Planner Output -->
+                <div id="planner-output" class="neumorphic-card p-8 space-y-6">
+                    <h3 class="text-2xl font-semibold text-blue-700 flex items-center space-x-2">
+                        <i data-lucide="calendar-check" class="w-6 h-6"></i>
+                        <span id="planner-crop-title">Cultivation Plan</span>
+                    </h3>
+                    
+                    <div class="space-y-3">
+                        <p class="text-sm font-medium text-gray-500">Current Phase (Simulated):</p>
+                        <p id="planner-phase" class="text-xl font-bold text-gray-800">Awaiting Selection...</p>
+                    </div>
+                    <div class="space-y-3">
+                        <p class="text-sm font-medium text-gray-500">Required Tasks:</p>
+                        <ul id="planner-tasks" class="list-disc pl-5 text-base text-gray-600 space-y-1">
+                            <li>Select a crop to generate the task list.</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+        
+        <!-- M. NEW INTERACTIVE FEATURE: Pest Identification Quiz (NEW STRUCTURE) -->
+        <section id="quiz" class="pt-10">
+            <h2 class="text-4xl font-bold text-center mb-12 text-gray-800">Knowledge Challenge Hub</h2>
+            <p class="text-center text-gray-600 mb-8 max-w-3xl mx-auto">Master farming concepts through interactive quizzes and earn rewards!</p>
+
+            <div class="grid lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                
+                <!-- Quiz List Column -->
+                <div id="quiz-list-container" class="neumorphic-card p-6 space-y-4 lg:col-span-2">
+                    <h3 class="text-xl font-semibold text-gray-700 mb-4 flex items-center space-x-2">
+                        <i data-lucide="book-open" class="w-5 h-5 text-orange-600"></i>
+                        <span>Available Quizzes</span>
+                    </h3>
+                    <div id="quiz-list-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Quiz cards injected here by JS -->
+                    </div>
+                </div>
+
+                <!-- Scoreboard Column -->
+                <div class="neumorphic-card p-6 space-y-4 lg:col-span-1">
+                    <h3 class="text-xl font-semibold text-gray-700 mb-4 flex items-center space-x-2">
+                        <i data-lucide="medal" class="w-5 h-5 text-amber-500"></i>
+                        <span>Top Scores (Leaderboard)</span>
+                    </h3>
+                    <ol id="scoreboard-list" class="list-decimal pl-5 text-gray-600 space-y-2 font-medium">
+                        <!-- Scores injected here by JS -->
+                    </ol>
+                </div>
+            </div>
+
+            <!-- Quiz Interface (Hidden until started) -->
+            <div id="quiz-interface" class="neumorphic-card p-8 space-y-6 mt-8 hidden max-w-3xl mx-auto">
+                <div class="h-2 bg-gray-200 rounded-full overflow-hidden mb-4">
+                    <div id="quiz-progress-bar" class="quiz-progress-bar" style="width: 0%;"></div>
+                </div>
+                
+                <p id="question-counter" class="text-center text-sm font-semibold text-gray-600"></p>
+                <p id="question-text" class="text-xl font-bold text-gray-800 text-center"></p>
+
+                <div id="answer-options" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Answer options injected here by JS -->
+                </div>
+                
+                <div class="flex justify-between items-center pt-4">
+                    <button id="prev-question-btn" onclick="prevQuestion()" class="neumorphic-button px-4 py-2 text-gray-600 text-sm font-semibold opacity-50 cursor-not-allowed" disabled>
+                        <i data-lucide="chevron-left" class="w-4 h-4 mr-1 inline-block"></i> Previous
+                    </button>
+                    <button id="next-question-btn" onclick="nextQuestion()" class="neumorphic-cta px-6 py-3 font-bold text-lg">
+                        Next Question
+                    </button>
+                </div>
+            </div>
+
+            <!-- Quiz Results (Hidden until finished) -->
+            <div id="quiz-results" class="neumorphic-card p-10 space-y-6 mt-8 hidden max-w-lg mx-auto text-center">
+                <h3 class="text-3xl font-bold text-green-700 flex items-center justify-center space-x-3">
+                    <i data-lucide="check-circle" class="w-8 h-8"></i>
+                    <span>Quiz Complete!</span>
+                </h3>
+                <div class="bg-gray-100 p-4 rounded-xl">
+                    <p class="text-sm text-gray-500">Your Score:</p>
+                    <p id="final-score" class="text-5xl font-extrabold text-purple-600 mt-1">0 / 8</p>
+                    <p id="points-earned" class="text-lg font-semibold text-amber-600 mt-2">🏆 0 points earned!</p>
+                </div>
+                <p id="quiz-message" class="text-lg font-semibold text-gray-700"></p>
+                <div class="flex justify-center space-x-4">
+                    <button onclick="retryQuiz()" class="neumorphic-cta bg-red-500 hover:bg-red-600 px-6 py-2 font-semibold">Retry</button>
+                    <button onclick="backToQuizzes()" class="neumorphic-button px-6 py-2 font-semibold text-gray-700">Back to Hub</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- N. NEW INTERACTIVE FEATURE: Yield Optimization Simulator (ENHANCED DETAILS) -->
+        <section id="optimization" class="pt-10">
+            <h2 class="text-4xl font-bold text-center mb-12 text-gray-800">Yield Optimization Simulator</h2>
+            <p class="text-center text-gray-600 mb-8 max-w-3xl mx-auto">Allocate your ₹100,000 budget across key inputs and calculate your maximum potential net profit. The optimal split is 40:35:25.</p>
+
+            <div class="grid lg:grid-cols-2 gap-12 items-start">
+                <!-- Input Allocation -->
+                <div class="neumorphic-card p-8 space-y-6">
+                    <h3 class="text-2xl font-semibold text-gray-700 mb-4">Allocate Budget (Total: ₹100,000)</h3>
+                    
+                    <form id="optimization-form" class="space-y-4">
+                        <div>
+                            <label for="budget-water" class="block text-sm font-medium mb-1 flex justify-between">
+                                <span>Water/Irrigation (%)</span>
+                                <span id="val-water" class="font-bold text-blue-600">30%</span>
+                            </label>
+                            <input type="range" id="budget-water" value="30" min="0" max="100" oninput="updateAllocation()" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer range-lg">
+                        </div>
+                        <div>
+                            <label for="budget-fertilizer" class="block text-sm font-medium mb-1 flex justify-between">
+                                <span>Fertilizer/Nutrients (%)</span>
+                                <span id="val-fertilizer" class="font-bold text-green-600">30%</span>
+                            </label>
+                            <input type="range" id="budget-fertilizer" value="30" min="0" max="100" oninput="updateAllocation()" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer range-lg">
+                        </div>
+                        <div>
+                            <label for="budget-pest" class="block text-sm font-medium mb-1 flex justify-between">
+                                <span>Pest/Weed Control (%)</span>
+                                <span id="val-pest" class="font-bold text-red-600">30%</span>
+                            </label>
+                            <input type="range" id="budget-pest" value="30" min="0" max="100" oninput="updateAllocation()" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer range-lg">
+                        </div>
+
+                        <div class="neumorphic-card p-4 rounded-xl text-center font-bold">
+                            <p class="text-sm font-medium text-gray-500">Remaining Budget %</p>
+                            <p id="remaining-budget" class="text-2xl text-yellow-600">10%</p>
+                        </div>
+                        
+                        <button type="submit" id="optimize-btn" class="w-full mt-6 py-3 font-bold text-lg neumorphic-cta bg-purple-600 hover:bg-purple-700">
+                            Calculate Yield & Profit
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Optimization Output -->
+                <div id="optimization-output" class="neumorphic-card p-8 space-y-6">
+                    <h3 class="text-2xl font-semibold text-purple-700 flex items-center space-x-2">
+                        <i data-lucide="calculator" class="w-6 h-6"></i>
+                        <span>Optimization Results</span>
+                    </h3>
+                    
+                    <div class="space-y-4">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="neumorphic-card p-4 rounded-xl bg-white/70">
+                                <p class="text-sm font-medium text-gray-500">Simulated Yield (Kg/Ha):</p>
+                                <p id="opt-yield" class="text-xl font-bold text-purple-600">0 Kg</p>
+                            </div>
+                            <div class="neumorphic-card p-4 rounded-xl bg-white/70">
+                                <p class="text-sm font-medium text-gray-500">Estimated Net Profit:</p>
+                                <p id="opt-profit" class="text-xl font-bold text-green-600">₹ 0</p>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="neumorphic-card p-4 rounded-xl bg-white/70">
+                                <p class="text-sm font-medium text-gray-500">Water Use Efficiency (WUE):</p>
+                                <p id="opt-wue" class="text-xl font-bold text-blue-600">0 Kg/L</p>
+                            </div>
+                            <div class="neumorphic-card p-4 rounded-xl bg-white/70">
+                                <p class="text-sm font-medium text-gray-500">Profit Margin:</p>
+                                <p id="opt-margin" class="text-xl font-bold text-lime-600">0%</p>
+                            </div>
+                        </div>
+                        
+                        <!-- NEW VISUALIZATION AREA -->
+                        <div id="opt-visualization" class="space-y-3 pt-4 border-t border-gray-300">
+                            <p class="text-sm font-medium text-gray-700 font-bold mb-2">Budget Allocation (Actual vs. Optimal 40:35:25)</p>
+                            <div class="space-y-1">
+                                <span class="text-xs text-gray-600">Water/Irrigation (Target: 40%)</span>
+                                <div id="vis-water-bar" class="h-3 rounded-full bg-blue-300" style="width: 0%"></div>
+                            </div>
+                            <div class="space-y-1">
+                                <span class="text-xs text-gray-600">Fertilizer/Nutrients (Target: 35%)</span>
+                                <div id="vis-fertilizer-bar" class="h-3 rounded-full bg-green-300" style="width: 0%"></div>
+                            </div>
+                            <div class="space-y-1">
+                                <span class="text-xs text-gray-600">Pest/Weed Control (Target: 25%)</span>
+                                <div id="vis-pest-bar" class="h-3 rounded-full bg-red-300" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        
+                        <p id="opt-message" class="text-base text-gray-600 pt-2">Adjust the sliders to find the optimal resource allocation for maximum profit!</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- H. AI Chatbot Simulator -->
+        <section id="chatbot" class="pt-10">
+            <h2 class="text-4xl font-bold text-center mb-12 text-gray-800">Try the AgriNova AI Assistant</h2>
+            <p class="text-center text-gray-600 mb-8 max-w-3xl mx-auto">Ask the AI a quick question about a crop, pest, or general advice (e.g., "What is the best fertilizer for tomatoes?").</p>
+
+            <div class="lg:w-2/3 mx-auto neumorphic-card p-6 md:p-8 space-y-6">
+                <!-- Chat Window -->
+                <div id="chat-window" class="p-4 space-y-4 flex flex-col">
+                    <div class="ai-message p-3 shadow-md">
+                        <p class="font-semibold text-sm mb-1 text-green-700">AgriNova AI:</p>
+                        <p>Hello! I'm your Smart Farming Companion. How can I assist you with your crops or farm today?</p>
+                    </div>
+                </div>
+
+                <!-- Chat Input Form -->
+                <form id="chat-form" class="flex space-x-4">
+                    <input type="text" id="chat-input" placeholder="Ask your farming question..." class="neumorphic-input flex-grow" required>
+                    <button type="submit" class="neumorphic-cta px-4 py-2 font-semibold rounded-xl">
+                        <i data-lucide="send" class="w-5 h-5"></i>
+                    </button>
+                </form>
+            </div>
+        </section>
+        
+        <!-- I. Gamification & Achievements -->
+        <section id="gamification" class="pt-10">
+            <h2 class="text-4xl font-bold text-center mb-12 text-gray-800">Gamification & Progress Tracking</h2>
+            <p class="text-center text-gray-600 mb-8 max-w-3xl mx-auto">We make learning fun! Track your progress and unlock badges as you master new agricultural concepts.</p>
+
+            <div class="grid lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                
+                <!-- Resource Calculator (NEW INTERACTIVE FEATURE) -->
+                <div class="neumorphic-card p-6 col-span-full md:col-span-2 space-y-4 rounded-3xl">
+                    <h3 class="text-2xl font-semibold text-purple-700 flex items-center space-x-2">
+                        <i data-lucide="trophy" class="w-6 h-6"></i> Resource Saver Challenge
+                    </h3>
+                    <form id="resource-form" class="space-y-4">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label for="input-water" class="block text-sm font-medium mb-1">Water Used (L/day/Ha)</label>
+                                <input type="number" id="input-water" value="2500" class="neumorphic-input" required>
+                            </div>
+                            <div>
+                                <label for="input-fertilizer" class="block text-sm font-medium mb-1">Fertilizer Used (Kg/Ha)</label>
+                                <input type="number" id="input-fertilizer" value="150" class="neumorphic-input" required>
+                            </div>
+                        </div>
+                        <button type="submit" id="resource-btn" class="w-full py-3 font-bold neumorphic-cta">
+                            Calculate Efficiency Points
+                        </button>
+                    </form>
+                    
+                    <div id="resource-output" class="neumorphic-card p-4 text-center hidden">
+                        <p class="text-sm font-medium text-gray-500">Total Points Earned:</p>
+                        <p id="output-points" class="text-3xl font-extrabold text-purple-600">0</p>
+                        <p id="output-status" class="text-sm font-medium text-gray-700 mt-2">Awaiting calculation...</p>
+                    </div>
+                </div>
+
+                <!-- Achievements Column -->
+                <div class="space-y-4 col-span-full md:col-span-1">
+                    <h3 class="text-xl font-semibold text-gray-700 border-b pb-2 border-gray-300">Milestones</h3>
+                    
+                    <!-- Achievement 1 -->
+                    <div class="neumorphic-card p-6 text-center space-y-3 bg-white rounded-3xl">
+                        <i data-lucide="award" class="w-10 h-10 mx-auto text-amber-500"></i>
+                        <h4 class="text-xl font-semibold">Soil Master</h4>
+                        <p class="text-gray-600 text-sm">Completed the 'NPK Balance' module.</p>
+                        <button class="neumorphic-pressed text-sm text-white px-3 py-1 bg-amber-500 rounded-xl">Achieved</button>
+                    </div>
+
+                    <!-- Achievement 2 (Interactive Mock) -->
+                    <div id="badge-pioneer" class="neumorphic-card p-6 text-center space-y-3 rounded-3xl">
+                        <i data-lucide="rocket" class="w-10 h-10 mx-auto text-blue-500"></i>
+                        <h4 class="text-xl font-semibold">Agri-Pioneer</h4>
+                        <p class="text-gray-600 text-sm">Unlocked after using the Crop Prediction Demo 5 times.</p>
+                        <button onclick="unlockPioneer(this)" class="neumorphic-button text-sm text-gray-700 px-3 py-1 rounded-xl">Unlock Now</button>
+                    </div>
+                    
+                    <!-- Achievement 3 (Quiz Badge) -->
+                    <div id="badge-quiz-master" class="neumorphic-card p-6 text-center space-y-3 rounded-3xl opacity-50">
+                        <i data-lucide="brain-circuit" class="w-10 h-10 mx-auto text-pink-500"></i>
+                        <h4 class="text-xl font-semibold">Quiz Champion</h4>
+                        <p class="text-gray-600 text-sm">Achieved a perfect score on the Knowledge Quiz (8 Qs).</p>
+                        <button class="neumorphic-button text-sm text-gray-700 px-3 py-1 rounded-xl cursor-default">Locked</button>
+                    </div>
+
+                    <!-- Achievement 4 (Optimization Badge) -->
+                    <div id="badge-optimizer" class="neumorphic-card p-6 text-center space-y-3 rounded-3xl opacity-50">
+                        <i data-lucide="sliders" class="w-10 h-10 mx-auto text-indigo-500"></i>
+                        <h4 class="text-xl font-semibold">Resource Optimizer</h4>
+                        <p class="text-gray-600 text-sm">Achieved over ₹130,000 net profit in the Optimization Simulator.</p>
+                        <button class="neumorphic-button text-sm text-gray-700 px-3 py-1 rounded-xl cursor-default">Locked</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- J. Impact and Goals (SDGs) -->
+        <section id="impact" class="pt-10">
+            <h2 class="text-4xl font-bold text-center mb-16 text-gray-800">Global Impact & SDGs</h2>
+            
+            <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                
+                <!-- SDG 2 -->
+                <div class="neumorphic-card p-6 space-y-3 rounded-3xl">
+                    <div class="flex items-center space-x-3">
+                        <i data-lucide="shovel" class="w-6 h-6 sdg-2"></i>
+                        <span class="text-lg font-semibold text-gray-700">SDG 2: Zero Hunger</span>
+                    </div>
+                    <p class="text-gray-600 text-sm">By optimizing crop choice and practices, we directly help boost agricultural productivity and resilience.</p>
+                </div>
+                
+                <!-- SDG 4 -->
+                <div class="neumorphic-card p-6 space-y-3 rounded-3xl">
+                    <div class="flex items-center space-x-3">
+                        <i data-lucide="book-open-text" class="w-6 h-6 sdg-4"></i>
+                        <span class="text-lg font-semibold text-gray-700">SDG 4: Quality Education</span>
+                    </div>
+                    <p class="text-gray-600 text-sm">Provides digital and interactive agricultural training, enhancing knowledge access for all farmers.</p>
+                </div>
+                
+                <!-- SDG 8 -->
+                <div class="neumorphic-card p-6 space-y-3 rounded-3xl">
+                    <div class="flex items-center space-x-3">
+                        <i data-lucide="bar-chart-3" class="w-6 h-6 sdg-8"></i>
+                        <span class="text-lg font-semibold text-gray-700">SDG 8: Economic Growth</span>
+                    </div>
+                    <p class="text-gray-600 text-sm">Focuses on profitability analysis to improve farm income and promote sustained, inclusive economic growth.</p>
+                </div>
+
+                <!-- SDG 9 -->
+                <div class="neumorphic-card p-6 space-y-3 rounded-3xl">
+                    <div class="flex items-center space-x-3">
+                        <i data-lucide="factory" class="w-6 h-6 sdg-9"></i>
+                        <span class="text-lg font-semibold text-gray-700">SDG 9: Industry & Innovation</span>
+                    </div>
+                    <p class="text-gray-600 text-sm">Promoting the adoption of modern, resilient digital infrastructure in agriculture.</p>
+                </div>
+
+                <!-- SDG 12 -->
+                <div class="neumorphic-card p-6 space-y-3 rounded-3xl">
+                    <div class="flex items-center space-x-3">
+                        <i data-lucide="recycle" class="w-6 h-6 sdg-12"></i>
+                        <span class="text-lg font-semibold text-gray-700">SDG 12: Responsible Consumption</span>
+                    </div>
+                    <p class="text-gray-600 text-sm">Facilitates efficient resource use through smart recommendations, reducing waste.</p>
+                </div>
+
+                <!-- SDG 13 -->
+                <div class="neumorphic-card p-6 space-y-3 rounded-3xl">
+                    <div class="flex items-center space-x-3">
+                        <i data-lucide="cloud-lightning" class="w-6 h-6 sdg-13"></i>
+                        <span class="text-lg font-semibold text-gray-700">SDG 13: Climate Action</span>
+                    </div>
+                    <p class="text-gray-600 text-sm">Aids in adaptation to climate change through resilient crop recommendations.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- K. Project Detailing and Team (Enhanced Detail) -->
+        <section id="team" class="pt-10">
+            <h2 class="text-4xl font-bold text-center mb-16 text-gray-800">Project Detailing & Research</h2>
+            
+            <div class="grid lg:grid-cols-2 gap-12">
+                <!-- Research and Uses Section -->
+                <div class="space-y-6">
+                    <h3 class="text-2xl font-semibold text-gray-700 border-b pb-2 border-gray-300">Technology and Future Uses</h3>
+                    
+                    <div class="neumorphic-card p-6 space-y-4 rounded-3xl">
+                        <h4 class="text-xl font-bold text-gray-700 flex items-center space-x-2"><i data-lucide="layers-3" class="w-6 h-6 text-indigo-600"></i><span>Architectural Overview</span></h4>
+                        <ul class="list-disc pl-5 text-gray-700 space-y-1 text-sm">
+                            <li>**Frontend:** Hybrid Mobile Application (React Native/Flutter) utilizing Neumorphic UI design for intuitive user experience.</li>
+                            <li>**Backend/API:** Python (Flask/Django) serving ML models and handling data routing.</li>
+                            <li>**Data Storage:** Scalable, secure cloud-based NoSQL database (e.g., Firestore/MongoDB) for profile and farm data.</li>
+                            <li>**IoT Communication:** Real-time data pipeline established using **MQTT Protocol** for low-latency sensor transmission.</li>
+                            <li>**Offline Capability:** Implements Service Workers and local caching to ensure core data (Library, Task Planner) is accessible without internet access.</li>
+                        </ul>
+                        
+                        <h4 class="text-xl font-bold text-green-600 flex items-center space-x-2 pt-4"><i data-lucide="pie-chart" class="w-6 h-6"></i><span>Data Visualization & Reporting</span></h4>
+                        <p class="text-gray-800 text-sm">All core metrics and profitability analyses are presented via interactive charts and intuitive dashboards, allowing farmers to quickly grasp complex trends and compare their current performance against historical benchmarks and AI-driven optimal paths.</p>
+                        
+                        <h4 class="text-xl font-bold text-blue-600 flex items-center space-x-2 pt-4"><i data-lucide="database" class="w-6 h-6"></i><span>Data Sources and Reliability</span></h4>
+                        <ul class="list-disc pl-5 text-gray-700 space-y-1 text-sm">
+                            <li>**Climate Data:** Sourced from NASA POWER (Prediction of Worldwide Energy Resources).</li>
+                            <li>**Soil Data:** Utilizes W.E.B.R.S. (World Exchange of Baseline Reference Soils) and mock farm-specific inputs.</li>
+                            <li>**Historical Yields:** Trained on large-scale datasets from organizations like the FAO (Food and Agriculture Organization).</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Team Section -->
+                <div class="space-y-6">
+                    <h3 class="text-2xl font-semibold text-gray-700 border-b pb-2 border-gray-300">Development Team</h3>
+                    
+                    <div class="neumorphic-card p-6 space-y-4 rounded-3xl">
+                        <h4 class="text-xl font-bold text-green-600">Guide</h4>
+                        <p class="text-gray-800">Mrs. S. Anusha, EASWARI ENGINEERING COLLEGE</p>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="neumorphic-card p-6 rounded-3xl">
+                            <h4 class="text-xl font-bold">Team Member</h4>
+                            <p class="text-gray-800">Rajchinna S</p>
+                            <p class="text-sm text-gray-500">ID: [1234567890]</p>
+                        </div>
+                        <div class="neumorphic-card p-6 rounded-3xl">
+                            <h4 class="text-xl font-bold">Team Member</h4>
+                            <p class="text-gray-800">Sandhya D</p>
+                            <p class="text-sm text-gray-500">ID: [0987654321]</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- L. Footer -->
+    <footer class="mt-20 pt-10 pb-6 neumorphic-card rounded-none border-t border-gray-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
+            <p class="text-gray-700 font-semibold">
+                EASWARI ENGINEERING COLLEGE
+            </p>
+            <p class="text-gray-600 text-sm">
+                Department of Information Technology - Developing the Future of Smart Agriculture.
+            </p>
+            
+            <!-- Contact and Social -->
+            <div class="flex flex-col sm:flex-row justify-center items-center space-y-3 sm:space-y-0 sm:space-x-8 text-gray-600">
+                <a href="mailto:support@agrinova.com" class="hover:text-green-600 transition duration-150 flex items-center space-x-2">
+                    <i data-lucide="mail" class="w-4 h-4"></i>
+                    <span>support@agrinova.com</span>
+                </a>
+                <div class="flex space-x-4">
+                    <button class="neumorphic-button p-2 text-gray-500 hover:text-green-600 rounded-xl"><i data-lucide="facebook" class="w-5 h-5"></i></button>
+                    <button class="neumorphic-button p-2 text-gray-500 hover:text-green-600 rounded-xl"><i data-lucide="twitter" class="w-5 h-5"></i></button>
+                    <button class="neumorphic-button p-2 text-gray-500 hover:text-green-600 rounded-xl"><i data-lucide="linkedin" class="w-5 h-5"></i></button>
+                </div>
+            </div>
+
+            <p class="text-xs text-gray-400 pt-4">
+                &copy; 2024 AgriNova. All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Timeout ID storage for controlling the notification box visibility
+        let notificationTimeoutId = null;
+        let predictionUseCount = 0; // Counter for Pioneer badge unlock
+        let highScores = [
+            { name: "Expert Farmer", score: 8, percentage: 100 },
+            { name: "AgriNova AI", score: 7, percentage: 88 },
+            { name: "New User", score: 5, percentage: 63 }
+        ];
+
+        // --- QUIZ DATA (Replaced by new format) ---
+        const quizzes = [
+            {
+                title: "Agricultural Knowledge Test",
+                category: "General Farming",
+                points: 100,
+                questionsData: [
+                    {
+                        question: "Which primary nutrient is essential for robust stem and leaf development (vegetative growth)?",
+                        options: ["Phosphorus (P)", "Potassium (K)", "Nitrogen (N)", "Calcium (Ca)"],
+                        correct: 2, // Index of correct answer
+                        explanation: "Nitrogen promotes vegetative growth and green leafy development."
+                    },
+                    {
+                        question: "Which pest causes a sticky, sugary residue (honeydew) on leaves and often transmits plant viruses?",
+                        options: ["Bollworm", "Aphid", "Nematode", "Leaf Miner"],
+                        correct: 1,
+                        explanation: "Aphids secrete honeydew and are common virus vectors."
+                    },
+                    {
+                        question: "A soil pH value of 5.5 is considered:",
+                        options: ["Neutral", "Slightly Alkaline", "Highly Acidic", "Slightly Acidic"],
+                        correct: 3,
+                        explanation: "The neutral range is 6.5-7.5. 5.5 is slightly acidic."
+                    },
+                    {
+                        question: "What is the primary benefit of **drip irrigation** over traditional flood methods?",
+                        options: ["It prevents soil erosion.", "It is highly water efficient.", "It requires zero maintenance.", "It works only in dry climates."],
+                        correct: 1,
+                        explanation: "Drip irrigation minimizes water waste through evaporation and runoff."
+                    },
+                    {
+                        question: "If a tomato plant's lower leaves develop dark, sunken spots and die off starting from the bottom, what fungal disease is the most likely culprit?",
+                        options: ["Powdery Mildew", "Early Blight", "Rust Disease", "Mosaic Virus"],
+                        correct: 1,
+                        explanation: "Early Blight typically starts with dark spots on older, lower leaves."
+                    },
+                    {
+                        question: "Which micronutrient deficiency causes 'little leaf' and often affects citrus and corn?",
+                        options: ["Boron (B)", "Manganese (Mn)", "Zinc (Zn)", "Copper (Cu)"],
+                        correct: 2,
+                        explanation: "Zinc deficiency often results in smaller, distorted leaves (little leaf)."
+                    },
+                    {
+                        question: "What term describes the intentional burning of crop residues after harvest to control pests and weeds?",
+                        options: ["Puddling", "Staking", "Stubble Mulching", "Slash-and-Burn"],
+                        correct: 3,
+                        explanation: "Slash-and-burn is a method used, often controversially, to clear land and control pests."
+                    },
+                    {
+                        question: "High soil salinity (EC > 4 dS/m) generally leads to what outcome for most non-salt tolerant crops?",
+                        options: ["Increased yields", "Improved root growth", "Water stress and toxicity", "Faster maturity"],
+                        correct: 2,
+                        explanation: "High salinity makes it harder for plants to absorb water, leading to stress and potential toxicity."
+                    }
+                ]
+            },
+            {
+                title: "Pest Identification Challenge",
+                category: "Crop Protection",
+                points: 80,
+                questionsData: [
+                    { question: "Whiteflies damage crops by sucking sap and spreading which disease?", options: ["Early Blight", "Yellow Mosaic Virus", "Leaf Curl", "Rust"], correct: 1, explanation: "Whiteflies are primary vectors for Yellow Mosaic Virus in crops like cotton and tomato." },
+                    { question: "What is the symptom of damage by Rice Stem Borer?", options: ["Sticky honeydew", "Small holes on fruit", "White/Dead Heart in the plant center", "Wilting during the day"], correct: 2, explanation: "The larva bores into the stem, causing the central shoot to dry up (dead heart)." },
+                    { question: "Which beneficial insect is commonly used to control Aphids?", options: ["Honey Bees", "Leaf Miners", "Ladybugs", "Grasshoppers"], correct: 2, explanation: "Ladybugs are natural predators of soft-bodied pests like aphids." }
+                ]
+            },
+            {
+                title: "Climate Adaptation Strategies",
+                category: "Weather & Resilience",
+                points: 120,
+                questionsData: [
+                    { question: "Which farming technique helps conserve soil moisture and reduce erosion during drought?", options: ["Flood Irrigation", "Tillage", "Mulching", "Deforestation"], correct: 2, explanation: "Mulching covers the soil, reducing water evaporation and stabilizing the top layer." },
+                    { question: "What is the key advantage of using drip irrigation in arid regions?", options: ["Reduces labor costs", "Increases pest risk", "Maximizes Water Use Efficiency (WUE)", "Higher initial cost"], correct: 2, explanation: "Drip irrigation is highly efficient, delivering water precisely to the root zone." }
+                ]
+            }
+        ];
+
+        // --- QUIZ STATE MANAGEMENT ---
+        let currentQuiz = null;
+        let currentQuestionIndex = 0;
+        let userAnswers = []; // Stores the index of the selected option for each question
+
+        // --- Utility Functions ---
+
+        /** Global function to show a temporary notification instead of alert() */
+        function showNotification(message) {
+            const box = document.getElementById('notification-box');
+            
+            // Clear any existing timeout to allow the new notification to be visible for the full duration
+            if (notificationTimeoutId) {
+                clearTimeout(notificationTimeoutId);
+            }
+
+            document.getElementById('notification-message').textContent = message;
+            box.classList.add('show');
+            
+            // Set a new timeout to hide the notification
+            notificationTimeoutId = setTimeout(() => {
+                box.classList.remove('show');
+                notificationTimeoutId = null; // Clear the ID after execution
+            }, 3000);
+        }
+
+        /** Scrolls to the top of the document. */
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        /** Toggles the visibility of the scroll-to-top button based on scroll position. */
+        function toggleScrollButton() {
+            const scrollButton = document.getElementById('scroll-to-top');
+            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+                scrollButton.classList.add('show');
+            } else {
+                scrollButton.classList.remove('show');
+            }
+        }
+        
+        // --- Gamification Logic (Kept mostly intact for badges) ---
+        function unlockPioneer(buttonElement) {
+            const badge = document.getElementById('badge-pioneer');
+            const icon = badge.querySelector('i');
+            if (buttonElement.textContent.trim() === 'UNLOCKED') return;
+            buttonElement.textContent = "UNLOCKED";
+            buttonElement.className = "neumorphic-pressed text-sm text-white px-3 py-1 bg-green-500 rounded-xl";
+            icon.className = "w-10 h-10 mx-auto text-green-500 animate-bounce";
+            showNotification("Achievement Unlocked: Agri-Pioneer!");
+            buttonElement.onclick = null; 
+            setTimeout(() => { icon.classList.remove('animate-bounce'); }, 1000);
+        }
+
+        function unlockQuizChampion() {
+             const badge = document.getElementById('badge-quiz-master');
+             const button = badge.querySelector('button');
+             if (button.textContent.trim() === 'Locked') {
+                 badge.classList.remove('opacity-50');
+                 button.textContent = "Achieved";
+                 button.className = "neumorphic-pressed text-sm text-white px-3 py-1 bg-pink-500 rounded-xl";
+                 showNotification("Quiz Champion Badge Unlocked!");
+             }
+        }
+
+        function unlockOptimizer() {
+            const badge = document.getElementById('badge-optimizer');
+            const button = badge.querySelector('button');
+            if (button.textContent.trim() === 'Locked') {
+                badge.classList.remove('opacity-50');
+                button.textContent = "Achieved";
+                button.className = "neumorphic-pressed text-sm text-white px-3 py-1 bg-indigo-500 rounded-xl";
+                showNotification("Optimizer Badge Unlocked!");
+            }
+        }
+        
+        // --- Dynamic Metric Status Logic (Kept intact) ---
+        function getRandomValue(min, max, decimals = 1) {
+            return (Math.random() * (max - min) + min).toFixed(decimals);
+        }
+        
+        function updateMetricStatus(metricId, value, minOptimal, maxOptimal, minCaution = null, maxCaution = null) {
+            const statusEl = document.getElementById(`status-${metricId}`);
+            let statusClass = 'text-green-600';
+            let statusText = 'Status: Optimal';
+
+            if (value < minOptimal || value > maxOptimal) {
+                if (minCaution !== null && value < minCaution) {
+                    statusClass = 'text-red-600';
+                    statusText = 'Status: Critical LOW';
+                } else if (maxCaution !== null && value > maxCaution) {
+                    statusClass = 'text-red-600';
+                    statusText = 'Status: Critical HIGH';
+                } else {
+                    statusClass = 'text-yellow-600';
+                    statusText = 'Status: Caution/Alert';
+                }
+            }
+
+            statusEl.className = `text-xs ${statusClass}`;
+            statusEl.textContent = statusText;
+        }
+
+        function refreshMetrics() {
+            const moisture = parseFloat(getRandomValue(55, 80, 0));
+            const temp = parseFloat(getRandomValue(22, 32));
+            const ph = parseFloat(getRandomValue(5.8, 7.2));
+            const sun = parseFloat(getRandomValue(1000, 2500, 0));
+            const humidity = parseFloat(getRandomValue(60, 90, 0));
+            const ec = parseFloat(getRandomValue(0.8, 1.8));
+            const latency = parseFloat(getRandomValue(0.4, 2.1));
+
+            document.getElementById('metric-moisture').textContent = moisture + "%";
+            document.getElementById('metric-temp').textContent = temp + " °C";
+            document.getElementById('metric-ph').textContent = ph;
+            document.getElementById('metric-sun').textContent = sun + " Lux";
+            document.getElementById('metric-humidity').textContent = humidity + "%";
+            document.getElementById('metric-ec').textContent = ec + " dS/m";
+            document.getElementById('metric-latency').textContent = latency + " s";
+
+            // Apply Dynamic Status Updates (Example ranges)
+            updateMetricStatus('moisture', moisture, 60, 75, 50, 85);
+            updateMetricStatus('temp', temp, 24, 28, 22, 30);
+            updateMetricStatus('ph', ph, 6.0, 6.8, 5.5, 7.0);
+            updateMetricStatus('ec', ec, 0.9, 1.5, 0.7, 1.9);
+            updateMetricStatus('humidity', humidity, 65, 80);
+            updateMetricStatus('sun', sun, 1500, 2200);
+            updateMetricStatus('latency', latency, 0.5, 1.5);
+
+            const button = document.getElementById('refresh-metrics-btn');
+            button.classList.add('neumorphic-pressed');
+            setTimeout(() => { button.classList.remove('neumorphic-pressed'); }, 300);
+            showNotification("Metrics Refreshed! New data loaded.");
+        }
+        
+        // --- Library Logic (FIXED BUG - added element parameter) ---
+        const libraryContent = {
+            pest: {
+                title: "Pest Control Essentials",
+                description: "Learn how to identify common crop pests like aphids and bollworms. We provide integrated pest management (IPM) strategies focusing on biological controls and minimal chemical use. Key focus on early detection via image recognition.",
+                modules: ["Module 1: Visual Pest Identification Guide (Video)", "Module 2: Organic Pesticide Recipes", "Module 3: Best Practices for Crop Rotation"]
+            },
+            soil: {
+                title: "Advanced Soil Health and Fertility",
+                description: "Deep dive into soil composition, NPK ratios, and micronutrients. Learn about soil testing methods, composting, and natural ways to enrich your field for long-term productivity and sustainable yield maximization.",
+                modules: ["Module 1: DIY Soil Testing Guide", "Module 2: The Science of NPK Balance", "Module 3: Composting and Manure Management"]
+            },
+            tools: {
+                title: "Modern Farming Technology & Tools",
+                description: "Explore the latest in AgTech. Modules cover the use of drones for crop surveying, IoT sensors for automated irrigation, and understanding farm management software for efficient resource planning.",
+                modules: ["Module 1: Introduction to Drone Mapping", "Module 2: Setting up IoT Sensors for Irrigation", "Module 3: Farm Inventory Management Software"]
+            }
+        };
+
+        function setLibraryContent(category, element) {
+            document.querySelectorAll('.filter-tab').forEach(tab => {
+                tab.classList.remove('active', 'neumorphic-pressed');
+            });
+            // Use the passed element instead of event.currentTarget
+            element.classList.add('active', 'neumorphic-pressed');
+
+            const content = libraryContent[category];
+            document.getElementById('library-title').textContent = content.title;
+            document.getElementById('library-description').textContent = content.description;
+            
+            const ul = document.getElementById('library-list');
+            ul.innerHTML = ''; // Clear existing list
+            content.modules.forEach(module => {
+                const li = document.createElement('li');
+                li.textContent = module;
+                ul.appendChild(li);
+            });
+        }
+
+        // --- Market Trends & Prediction Logic (Kept intact) ---
+        function applyMarketTrend(trend, buttonElement) {
+            document.querySelectorAll('.market-trend-btn').forEach(btn => btn.classList.remove('neumorphic-pressed'));
+            buttonElement.classList.add('neumorphic-pressed');
+
+            const priceEl = document.getElementById('input-price');
+            const costEl = document.getElementById('input-cost');
+            const basePrice = 50;
+            const baseCost = 50000;
+
+            if (trend === 'highDemand') {
+                priceEl.value = (basePrice * 1.5).toFixed(0); 
+                costEl.value = (baseCost * 1.05).toFixed(0); 
+                showNotification("Market Trend: Commodity Price Surged! Analyzing profitability...");
+            } else if (trend === 'costSpike') {
+                priceEl.value = (basePrice * 0.9).toFixed(0); 
+                costEl.value = (baseCost * 1.25).toFixed(0);  
+                showNotification("Market Trend: Input Costs Spiked! Analyzing profitability...");
+            } else { // 'normal'
+                priceEl.value = basePrice.toFixed(0);
+                costEl.value = baseCost.toFixed(0);
+                showNotification("Market Trend: Normal conditions restored. Analyzing profitability...");
+            }
+            
+            document.getElementById('demo-form').dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+        }
+
+        const indianStates = {
+            Maharashtra: { rainfall: 1200, region: 'West', soil: 'black' },
+            Punjab: { rainfall: 600, region: 'North', soil: 'alluvial' },
+            Kerala: { rainfall: 3000, region: 'South', soil: 'laterite' },
+            TamilNadu: { rainfall: 950, region: 'South', soil: 'red' },
+            WestBengal: { rainfall: 1750, region: 'East', soil: 'alluvial' },
+            Rajasthan: { rainfall: 500, region: 'West', soil: 'sandy' },
+            Bihar: { rainfall: 1100, region: 'East', soil: 'alluvial' },
+            Karnataka: { rainfall: 1300, region: 'South', soil: 'red' }
+        };
+
+        function populateStateData() {
+            const select = document.getElementById('input-state');
+            for (const state in indianStates) {
+                const option = document.createElement('option');
+                option.value = state;
+                option.textContent = state;
+                select.appendChild(option);
+            }
+            select.value = 'Maharashtra';
+            updateRainfallPlaceholder();
+        }
+
+        function updateRainfallPlaceholder() {
+            const state = document.getElementById('input-state').value;
+            const rainfallInput = document.getElementById('input-rainfall');
+            const soilInput = document.getElementById('input-soil-type');
+            
+            if (indianStates[state]) {
+                const { rainfall, soil, region } = indianStates[state];
+                rainfallInput.value = rainfall;
+                rainfallInput.placeholder = `Avg. ${rainfall} mm`;
+                soilInput.value = soil; 
+                showNotification(`Climate and soil mock data set for ${state} (${region}).`);
+            }
+        }
+        
+        document.getElementById('demo-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            predictionUseCount++;
+            if (predictionUseCount === 5) {
+                 const pioneerBtn = document.getElementById('badge-pioneer').querySelector('button');
+                 if (pioneerBtn && pioneerBtn.textContent.trim() === 'Unlock Now') {
+                    unlockPioneer(pioneerBtn);
+                 }
+            }
+
+            const N = parseFloat(document.getElementById('input-n').value);
+            const P = parseFloat(document.getElementById('input-p').value);
+            const K = parseFloat(document.getElementById('input-k').value);
+            const Temp = parseFloat(document.getElementById('input-temp').value);
+            const Price = parseFloat(document.getElementById('input-price').value);
+            const Cost = parseFloat(document.getElementById('input-cost').value);
+            const SoilType = document.getElementById('input-soil-type').value;
+            const State = document.getElementById('input-state').value;
+            const Rainfall = parseFloat(document.getElementById('input-rainfall').value);
+            const Season = document.getElementById('input-season').value; // NEW
+
+            const outputEl = document.getElementById('demo-output');
+            const placeholderEl = document.getElementById('initial-output-placeholder');
+            const cropEl = document.getElementById('output-crop');
+            const profitEl = document.getElementById('output-profit');
+            const yieldEl = document.getElementById('output-yield');
+            const netProfitEl = document.getElementById('output-net-profit');
+            
+            placeholderEl.classList.add('hidden');
+            outputEl.classList.remove('hidden');
+
+            let recommendedCrop = "General Crop (Tough)";
+            let estimatedYield = 2500; 
+
+            // 1. Primary Recommendation based on Season, Geography/Soil
+            
+            // Kharif (Monsoon) Logic
+            if (Season === 'monsoon') {
+                if (SoilType === 'black' && Rainfall > 700 && Temp > 25) {
+                    recommendedCrop = "Cotton (Kharif Cash Crop)";
+                    estimatedYield = 3200;
+                } else if (SoilType === 'alluvial' && Rainfall > 1000) {
+                    recommendedCrop = "Paddy (Kharif Staple)";
+                    estimatedYield = 4500;
+                } else if (SoilType === 'red' && Rainfall > 600) {
+                    recommendedCrop = "Maize / Groundnut";
+                    estimatedYield = 3800;
+                } else {
+                    recommendedCrop = "Millets / Pulses (Drought Resistant Kharif)";
+                    estimatedYield = 2000;
+                }
+            } 
+            
+            // Rabi (Winter) Logic
+            else if (Season === 'winter') {
+                if (SoilType === 'alluvial' && Temp < 22 && Rainfall < 1000) {
+                    recommendedCrop = "Wheat (Rabi Grain)";
+                    estimatedYield = 5000;
+                } else if (SoilType === 'black' && Temp < 25) {
+                    recommendedCrop = "Chickpea / Mustard (Rabi Pulses/Oilseed)";
+                    estimatedYield = 2800;
+                } else {
+                    recommendedCrop = "Barley / Oilseeds (Rabi)";
+                    estimatedYield = 2500;
+                }
+            } 
+            
+            // Zaid (Summer) Logic
+            else if (Season === 'summer') {
+                recommendedCrop = "Fodder Maize / Summer Pulses (Quick Growth)";
+                estimatedYield = 3500;
+            }
+
+
+            // 2. Fine-tuning Yield based on NPK Balance (Modifier)
+            const targetN = 90;
+            const targetP = 45;
+            const targetK = 45;
+            const deviationFactor = Math.abs(N - targetN) * 0.005 + Math.abs(P - targetP) * 0.01 + Math.abs(K - targetK) * 0.01;
+            
+            // Apply severe penalty if NPK is completely off target, or if rainfall is critical for a water-intensive crop
+            if (recommendedCrop.includes("Paddy") && Rainfall < 1000) {
+                 estimatedYield *= 0.6; // Heavy penalty for water stress
+            }
+
+            estimatedYield = Math.floor(estimatedYield * (1.0 - Math.min(deviationFactor, 0.3)));
+            estimatedYield = Math.max(estimatedYield, 500); 
+
+            // 3. Calculate Net Profit
+            const revenue = estimatedYield * Price;
+            const netProfit = revenue - Cost;
+
+            cropEl.textContent = recommendedCrop;
+            
+            let profitability, profitColor;
+            if (netProfit > 120000) {
+                profitability = "Excellent (A+)";
+                profitColor = "text-green-600";
+            } else if (netProfit > 40000) {
+                profitability = "High (B+)";
+                profitColor = "text-lime-600";
+            } else if (netProfit > 10000) {
+                profitability = "Moderate (C)";
+                profitColor = "text-yellow-600";
+            } else {
+                profitability = "Low/Risky (D)";
+                profitColor = "text-red-600";
+            }
+            
+            profitEl.textContent = profitability;
+            yieldEl.textContent = estimatedYield.toLocaleString() + " Kg";
+            netProfitEl.textContent = "₹ " + netProfit.toLocaleString(); 
+            
+            profitEl.className = 'text-2xl font-bold'; 
+            profitEl.classList.add(profitColor);
+
+            const button = document.getElementById('recommend-btn');
+            button.classList.add('neumorphic-pressed');
+            setTimeout(() => { button.classList.remove('neumorphic-pressed'); }, 300);
+            
+            if (e.isTrusted) {
+                showNotification(`Profit analysis complete for ${recommendedCrop}. Use count: ${predictionUseCount}/5`);
+            }
+        });
+        
+        // --- Diagnosis Logic (Kept intact) ---
+        function runDiagnosis() {
+            const symptom = document.getElementById('symptom-select').value;
+            const titleEl = document.getElementById('diagnosis-title');
+            const causeEl = document.getElementById('diagnosis-cause');
+            const actionEl = document.getElementById('diagnosis-action');
+            const btn = document.getElementById('diagnosis-btn');
+
+            let title, cause, action;
+
+            switch (symptom) {
+                case 'yellowing':
+                    title = "Nutrient Deficiency Alert";
+                    cause = "Likely **Nitrogen (N)** or **Iron (Fe)** Deficiency (Chlorosis).";
+                    action = "Action: Test soil immediately to confirm. Apply a balanced foliar spray rich in N or chelated iron. Check soil pH, as high pH can lock out iron.";
+                    break;
+                case 'spots':
+                    title = "Fungal Infection Suspected (Early Blight)";
+                    cause = "High probability of fungal disease (e.g., Early Blight or Leaf Spot) due to high humidity.";
+                    action = "Action: Isolate affected plants. Apply a broad-spectrum organic fungicide (e.g., copper fungicide). Improve air circulation and reduce overhead watering.";
+                    break;
+                case 'wilt':
+                    title = "Potential Root/Vascular Damage";
+                    cause = "Could be **Fusarium Wilt** (fungal) or severe drought/root-bound stress.";
+                    action = "Action: Check soil moisture deep down. If dry, water deeply. If moist, suspect soil-borne disease; consider removing and destroying the infected plant to prevent spread.";
+                    break;
+                case 'residue':
+                    title = "Pest Infestation Confirmed (Aphids/Mites)";
+                    cause = "Confirmation of soft-bodied pests like **Aphids** or **Spider Mites**. Sticky residue (honeydew) is their waste.";
+                    action = "Action: Apply insecticidal soap or **Neem oil spray** to the undersides of the leaves every 5-7 days. Introduce beneficial insects like ladybugs if the infestation is severe.";
+                    break;
+                case 'holes':
+                    title = "Chewing Pest Damage Alert";
+                    cause = "Presence of **Cutworms, Grasshoppers, or Caterpillars** (larvae). Nocturnal feeders are often responsible.";
+                    action = "Action: Inspect the base of the plant at dusk for cutworms. Apply B.T. (Bacillus thuringiensis) as an organic biological control to target caterpillars.";
+                    break;
+                default:
+                    title = "Select a Symptom";
+                    cause = "Awaiting Simulation...";
+                    action = "Select a symptom and click 'Run AI Diagnosis' to see immediate mitigation steps.";
+            }
+
+            titleEl.textContent = title;
+            causeEl.innerHTML = cause;
+            actionEl.textContent = action;
+            
+            btn.classList.add('neumorphic-pressed');
+            setTimeout(() => { btn.classList.remove('neumorphic-pressed'); }, 300);
+            showNotification(`Diagnosis complete for: ${symptom}!`);
+        }
+
+        // --- Planner Logic (Updated with Chilli) ---
+        const cropPlans = {
+             rice: {
+                 phase: "Mid-Season: Active Tillering to Panicle Initiation (Day 30-70)",
+                 tasks: [
+                     "Critical: Apply second dose of Nitrogen fertilizer (Urea) at maximum tillering stage.",
+                     "Maintain water depth at 5-10 cm to suppress weeds.",
+                     "Monitor for the golden apple snail and rice stem borer.",
+                     "Conduct final hand weeding or herbicide application."
+                 ]
+             },
+             wheat: {
+                 phase: "Jointing/Stem Elongation (Day 40-70)",
+                 tasks: [
+                     "Perform critical irrigation (Crown Root Initiation stage is vital) based on soil probe data.",
+                     "Apply topdressing of Nitrogen (N) before the booting stage to boost grain filling.",
+                     "Scout for rust diseases and leaf blight; apply targeted fungicide if infection rates are high."
+                 ]
+             },
+             tomato: {
+                 phase: "Late Vegetative to Fruit Setting (Day 50-90)",
+                 tasks: [
+                     "Increase Potassium (K) and Phosphorus (P) application; reduce Nitrogen (N) to encourage fruiting.",
+                     "Prune lateral shoots ('suckers') weekly to direct energy to fruits.",
+                     "Provide robust physical staking or support for heavy vines.",
+                     "Monitor for Blossom End Rot (BER) (ensure consistent watering and Calcium supply)."
+                 ]
+             },
+             cotton: {
+                 phase: "Square Formation and Early Flowering (Day 40-90)",
+                 tasks: [
+                     "Maintain deep soil moisture; irrigation is critical to prevent square drop.",
+                     "Primary focus on controlling pests like Bollworm and Jassids (apply selective pesticide).",
+                     "Apply Boron and Zinc foliar spray to maximize flowering and boll setting.",
+                     "Conduct first round of inter-cultivation to manage weeds and aerate soil."
+                 ]
+             },
+             chilli: {
+                 phase: "Fruiting and Harvesting (Day 80-150)",
+                 tasks: [
+                     "Maintain high Phosphorus (P) and Potassium (K) levels for fruit quality and heat stress tolerance.",
+                     "Provide light, frequent irrigation; avoid waterlogging.",
+                     "Scout heavily for Thrips and Mites (curling leaves); apply appropriate miticide.",
+                     "Begin staggered harvesting as fruits reach maturity."
+                 ]
+             }
+         };
+
+        function viewCropPlan() {
+            const crop = document.getElementById('crop-select').value;
+            const titleEl = document.getElementById('planner-crop-title');
+            const phaseEl = document.getElementById('planner-phase');
+            const tasksUl = document.getElementById('planner-tasks');
+            const btn = document.getElementById('planner-btn');
+
+            const plan = cropPlans[crop];
+            
+            if (plan) {
+                const cropName = document.getElementById('crop-select').options[document.getElementById('crop-select').selectedIndex].text;
+                titleEl.textContent = `${cropName} Cultivation Plan`;
+                phaseEl.textContent = plan.phase;
+                tasksUl.innerHTML = '';
+                plan.tasks.forEach(task => {
+                    const li = document.createElement('li');
+                    li.textContent = task;
+                    tasksUl.appendChild(li);
+                });
+
+                btn.classList.add('neumorphic-pressed');
+                setTimeout(() => { btn.classList.remove('neumorphic-pressed'); }, 300);
+                showNotification(`Plan generated for ${cropName}.`);
+            }
+        }
+        
+        // --- Chatbot Logic (Kept intact) ---
+        function generateAIResponse(query) {
+            const lowerQuery = query.toLowerCase();
+
+            if (lowerQuery.includes('fertilizer') || lowerQuery.includes('npk')) {
+                return "For **tomatoes** specifically, during the fruit setting phase, reduce Nitrogen and focus on high Phosphorus and Potassium (e.g., NPK 5-15-15) to encourage fruit development over leafy growth. This also helps prevent blossom end rot.";
+            } else if (lowerQuery.includes('pest') || lowerQuery.includes('disease')) {
+                return "If you are seeing **curled leaves and sticky residue**, it might be aphids. Try applying Neem Oil solution every 7 days. If the issue persists, use the dedicated 'Diagnosis Simulator' above for a detailed report.";
+            } else if (lowerQuery.includes('soil health') || lowerQuery.includes('ph')) {
+                return "Soil pH affects nutrient availability. Most crops prefer a slightly acidic to neutral range (**6.0 to 7.0**). If your pH is too low, you can add lime; if it's too high, add sulfur or organic matter.";
+            } else if (lowerQuery.includes('weather') || lowerQuery.includes('rain')) {
+                return "It's crucial to check your 7-day forecast. If heavy rain is expected, ensure your drainage systems are clear. If it's too dry, deep water early in the morning, which reduces evaporation.";
+            } else if (lowerQuery.includes('thank') || lowerQuery.includes('great')) {
+                 return "You're very welcome! Feel free to ask anything else about your farm. Happy farming and good luck with your crops!";
+            } else {
+                return "That's a great question! AgriNova's full app version uses real-time web grounding to answer this. Based on general knowledge, focus on soil health first. Is your query related to **soil, pests, or a specific crop**?";
+            }
+        }
+
+        function handleChatSubmit(e) {
+            e.preventDefault();
+            const chatInput = document.getElementById('chat-input');
+            const chatWindow = document.getElementById('chat-window');
+            const userQuery = chatInput.value.trim();
+
+            if (!userQuery) return;
+
+            const userMsgDiv = document.createElement('div');
+            userMsgDiv.className = 'user-message p-3 shadow-md';
+            userMsgDiv.innerHTML = `<p class="font-semibold text-sm mb-1">You:</p><p>${userQuery}</p>`;
+            chatWindow.appendChild(userMsgDiv);
+
+            chatInput.value = '';
+            chatInput.disabled = true;
+
+            const loadingMsgDiv = document.createElement('div');
+            loadingMsgDiv.className = 'ai-message p-3 shadow-md';
+            loadingMsgDiv.innerHTML = `<p class="font-semibold text-sm mb-1 text-green-700">AgriNova AI:</p><p id="loading-dots">...</p>`;
+            chatWindow.appendChild(loadingMsgDiv);
+            chatWindow.scrollTop = chatWindow.scrollHeight; 
+
+            setTimeout(() => {
+                const aiResponse = generateAIResponse(userQuery);
+                
+                loadingMsgDiv.innerHTML = `<p class="font-semibold text-sm mb-1 text-green-700">AgriNova AI:</p><p>${aiResponse}</p>`;
+                
+                chatInput.disabled = false;
+                chatInput.focus();
+                chatWindow.scrollTop = chatWindow.scrollHeight;
+                
+            }, 1500);
+        }
+
+        // --- Optimization Logic (Kept intact) ---
+        const totalBudget = 100; // Represents 100%
+        const optimalSplit = { water: 40, fertilizer: 35, pest: 25 };
+        const pricePerKg = 60; // Mock selling price
+        const baseCost = 20000; // Base non-budgeted fixed costs
+
+        function updateAllocation() {
+            const water = parseInt(document.getElementById('budget-water').value);
+            const fertilizer = parseInt(document.getElementById('budget-fertilizer').value);
+            const pest = parseInt(document.getElementById('budget-pest').value);
+            const used = water + fertilizer + pest;
+            const remaining = totalBudget - used;
+
+            document.getElementById('val-water').textContent = `${water}%`;
+            document.getElementById('val-fertilizer').textContent = `${fertilizer}%`;
+            document.getElementById('val-pest').textContent = `${pest}%`;
+
+            const remainingEl = document.getElementById('remaining-budget');
+            remainingEl.textContent = `${remaining}%`;
+            
+            if (remaining < 0) {
+                remainingEl.classList.remove('text-yellow-600');
+                remainingEl.classList.add('text-red-600');
+                document.getElementById('optimize-btn').disabled = true;
+                remainingEl.textContent = `OVER budget by ${Math.abs(remaining)}%`;
+            } else {
+                remainingEl.classList.remove('text-red-600');
+                remainingEl.classList.add('text-yellow-600');
+                document.getElementById('optimize-btn').disabled = false;
+            }
+        }
+        
+        document.getElementById('optimization-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const water = parseInt(document.getElementById('budget-water').value);
+            const fertilizer = parseInt(document.getElementById('budget-fertilizer').value);
+            const pest = parseInt(document.getElementById('budget-pest').value);
+
+            if (water + fertilizer + pest > totalBudget) {
+                showNotification("Error: Budget exceeded! Please allocate a total of 100% or less.");
+                return;
+            }
+
+            const baseYield = 4000; 
+            const optimalWaterLiters = 50000; 
+            const waterBudgetCost = water * 1000;
+            const waterUsed = (water / optimalSplit.water) * optimalWaterLiters; 
+
+            const waterDev = Math.abs(water - optimalSplit.water) / optimalSplit.water;
+            const fertilizerDev = Math.abs(fertilizer - optimalSplit.fertilizer) / optimalSplit.fertilizer;
+            const pestDev = Math.abs(pest - optimalSplit.pest) / optimalSplit.pest;
+            
+            const totalDeviation = Math.min((waterDev + fertilizerDev + pestDev) / 3, 1.0);
+            
+            let yieldReduction = baseYield * 0.4 * totalDeviation;
+            
+            const budgetUsed = water + fertilizer + pest;
+            if (budgetUsed < totalBudget) {
+                const underspent = totalBudget - budgetUsed;
+                yieldReduction += (baseYield * 0.01) * (underspent / 5);
+            }
+            
+            let finalYield = Math.max(Math.floor(baseYield - yieldReduction), 100); 
+            
+            const totalRevenue = finalYield * pricePerKg;
+            const allocatedCost = budgetUsed * 1000; 
+            const totalCost = allocatedCost + baseCost;
+            const netProfit = totalRevenue - totalCost;
+
+            const profitMargin = ((netProfit / totalRevenue) * 100).toFixed(1);
+            const waterUseEfficiency = (finalYield / (waterUsed / 1000)).toFixed(2); 
+            const displayProfitMargin = isNaN(profitMargin) || profitMargin < 0 ? 'Negative' : profitMargin;
+            const displayWUE = isNaN(waterUseEfficiency) || !isFinite(waterUseEfficiency) ? 'N/A' : `${waterUseEfficiency} Kg/kL`;
+
+            document.getElementById('opt-yield').textContent = `${finalYield.toLocaleString()} Kg`;
+            document.getElementById('opt-profit').textContent = `₹ ${netProfit.toLocaleString()}`;
+            document.getElementById('opt-wue').textContent = displayWUE;
+            document.getElementById('opt-margin').textContent = `${displayProfitMargin}%`;
+
+            document.getElementById('vis-water-bar').style.width = `${water}%`;
+            document.getElementById('vis-fertilizer-bar').style.width = `${fertilizer}%`;
+            document.getElementById('vis-pest-bar').style.width = `${pest}%`;
+
+            let message = '';
+            if (netProfit >= 130000) {
+                message = "🎯 **MASTER OPTIMIZER!** You achieved phenomenal profit by balancing resources perfectly.";
+                document.getElementById('opt-profit').classList.remove('text-green-600', 'text-yellow-600', 'text-red-600');
+                document.getElementById('opt-profit').classList.add('text-indigo-600');
+                unlockOptimizer(); 
+            } else if (netProfit >= 80000) {
+                message = "✅ **Excellent Allocation!** Your profit is high, try a slight adjustment for max gain.";
+                document.getElementById('opt-profit').classList.remove('text-indigo-600', 'text-yellow-600', 'text-red-600');
+                document.getElementById('opt-profit').classList.add('text-green-600');
+            } else if (netProfit >= 30000) {
+                message = "⚠️ **Moderate Profit.** Your allocation is slightly off the optimal 40:35:25 target.";
+                document.getElementById('opt-profit').classList.remove('text-indigo-600', 'text-green-600', 'text-red-600');
+                document.getElementById('opt-profit').classList.add('text-yellow-600');
+            } else {
+                message = "🛑 **Low Profit/Loss.** Significant resource imbalance led to poor yield or high costs.";
+                document.getElementById('opt-profit').classList.remove('text-indigo-600', 'text-green-600', 'text-yellow-600');
+                document.getElementById('opt-profit').classList.add('text-red-600');
+            }
+
+            document.getElementById('opt-message').innerHTML = message;
+
+            const btn = document.getElementById('optimize-btn');
+            btn.classList.add('neumorphic-pressed');
+            setTimeout(() => { btn.classList.remove('neumorphic-pressed'); }, 300);
+            showNotification(`Optimization complete. Net Profit: ₹${netProfit.toLocaleString()}.`);
+        });
+
+        // --- NEW QUIZ LOGIC FUNCTIONS ---
+        
+        /** Loads the list of available quizzes into the grid. */
+        function loadQuizzes() {
+            const quizGrid = document.getElementById('quiz-list-grid');
+            quizGrid.innerHTML = quizzes.map((quiz, index) => `
+                <div class="neumorphic-card p-6 space-y-3">
+                    <div class="quiz-card-header">
+                        <div>
+                            <h4 class="text-lg font-semibold text-gray-800">${quiz.title}</h4>
+                            <p class="text-sm text-gray-500">${quiz.category}</p>
+                        </div>
+                        <div class="quiz-points">
+                            <i data-lucide="award" class="w-4 h-4"></i>
+                            <span>${quiz.points} PTS</span>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-600">${quiz.questionsData.length} Questions</span>
+                        <button class="neumorphic-cta px-4 py-2 text-sm font-semibold rounded-xl" 
+                                onclick="startQuiz(${index})">
+                            Start Challenge
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+            lucide.createIcons();
+            document.getElementById('quiz-interface').classList.add('hidden');
+            document.getElementById('quiz-list-container').classList.remove('hidden');
+            document.getElementById('quiz-results').classList.add('hidden');
+        }
+
+        /** Renders the scoreboard from the highScores array. */
+        function renderScoreboard() {
+            const sbList = document.getElementById('scoreboard-list');
+            sbList.innerHTML = '';
+            
+            // Sort by score
+            highScores.sort((a, b) => b.score - a.score);
+            
+            // Render top entries
+            highScores.slice(0, 5).forEach((scoreEntry, index) => {
+                const totalQs = quizzes[0].questionsData.length; // Use Q1 length for percentage
+                const percentage = ((scoreEntry.score / totalQs) * 100).toFixed(0);
+                const li = document.createElement('li');
+                li.className = 'flex justify-between items-center';
+                li.innerHTML = `
+                    <span class="font-semibold">${index + 1}. ${scoreEntry.name}</span>
+                    <span class="text-xs font-bold text-green-600">${scoreEntry.score}/${totalQs} (${percentage}%)</span>
+                `;
+                sbList.appendChild(li);
+            });
+        }
+
+        /** Starts a selected quiz. */
+        function startQuiz(quizIndex) {
+            currentQuiz = quizzes[quizIndex];
+            currentQuestionIndex = 0;
+            userAnswers = [];
+            
+            document.getElementById('quiz-list-container').classList.add('hidden');
+            document.getElementById('quiz-interface').classList.remove('hidden');
+            document.getElementById('quiz-results').classList.add('hidden');
+            
+            loadQuestion();
+            showNotification(`Starting Quiz: ${currentQuiz.title}`);
+        }
+        
+        /** Loads the current question and options. */
+        function loadQuestion() {
+            const question = currentQuiz.questionsData[currentQuestionIndex];
+            const totalQuestions = currentQuiz.questionsData.length;
+            const optionsContainer = document.getElementById('answer-options');
+            const nextBtn = document.getElementById('next-question-btn');
+            const prevBtn = document.getElementById('prev-question-btn');
+            
+            // Progress Bar and Counter
+            const progress = ((currentQuestionIndex + 1) / totalQuestions) * 100;
+            document.getElementById('quiz-progress-bar').style.width = progress + '%';
+            document.getElementById('question-counter').textContent = `Question ${currentQuestionIndex + 1} of ${totalQuestions} - ${currentQuiz.title}`;
+            
+            // Question Text
+            document.getElementById('question-text').textContent = question.question;
+            
+            // Answer Options
+            optionsContainer.innerHTML = question.options.map((option, index) => {
+                const isSelected = userAnswers[currentQuestionIndex] === index;
+                const selectedClass = isSelected ? 'quiz-option selected' : 'quiz-option';
+                return `
+                    <div class="neumorphic-button text-left quiz-option p-3 rounded-xl cursor-pointer text-sm font-medium ${selectedClass}" 
+                        onclick="selectAnswer(${index}, this)">
+                        ${option}
+                    </div>
+                `;
+            }).join('');
+            
+            // Navigation Button Visibility/Text
+            nextBtn.textContent = currentQuestionIndex === totalQuestions - 1 ? 'Finish Quiz' : 'Next Question';
+            
+            if (currentQuestionIndex > 0) {
+                 prevBtn.disabled = false;
+                 prevBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            } else {
+                 prevBtn.disabled = true;
+                 prevBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            }
+
+            // Ensure next button reflects current answer state
+            updateNextButtonState();
+        }
+
+        /** Updates the state of the Next button based on whether an answer is selected. */
+        function updateNextButtonState() {
+             const nextBtn = document.getElementById('next-question-btn');
+             if (userAnswers[currentQuestionIndex] === undefined) {
+                nextBtn.disabled = true;
+                nextBtn.classList.add('opacity-50', 'cursor-not-allowed');
+             } else {
+                nextBtn.disabled = false;
+                nextBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+             }
+        }
+        
+        /** Records user's answer and updates UI. */
+        function selectAnswer(answerIndex, element) {
+            // Remove previous selection styling
+            document.querySelectorAll('.quiz-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // Apply new selection styling
+            element.classList.add('selected');
+            
+            // Store user's answer
+            userAnswers[currentQuestionIndex] = answerIndex;
+
+            updateNextButtonState();
+        }
+
+        /** Moves to the next question or finishes the quiz. */
+        function nextQuestion() {
+            if (userAnswers[currentQuestionIndex] === undefined) {
+                showNotification('Please select an answer before moving on.');
+                return;
+            }
+            
+            if (currentQuestionIndex < currentQuiz.questionsData.length - 1) {
+                currentQuestionIndex++;
+                loadQuestion();
+            } else {
+                finishQuiz();
+            }
+        }
+
+        /** Moves to the previous question. */
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion();
+            }
+        }
+        
+        /** Calculates score, displays results, and updates scoreboard/badges. */
+        function finishQuiz() {
+            let correctAnswers = 0;
+            const totalQuestions = currentQuiz.questionsData.length;
+            
+            currentQuiz.questionsData.forEach((question, index) => {
+                if (userAnswers[index] === question.correct) {
+                    correctAnswers++;
+                }
+            });
+            
+            const percentage = Math.round((correctAnswers / totalQuestions) * 100);
+            const pointsEarned = Math.round((percentage / 100) * currentQuiz.points);
+            
+            // Results Display
+            document.getElementById('quiz-interface').classList.add('hidden');
+            document.getElementById('quiz-results').classList.remove('hidden');
+            
+            document.getElementById('final-score').textContent = `${correctAnswers} / ${totalQuestions}`;
+            document.getElementById('points-earned').textContent = `🏆 ${pointsEarned} points earned!`;
+
+            const messageEl = document.getElementById('quiz-message');
+            if (correctAnswers === totalQuestions) {
+                 messageEl.textContent = "PERFECT SCORE! You are a true Quiz Champion!";
+                 unlockQuizChampion();
+            } else if (percentage >= 75) {
+                 messageEl.textContent = "Great job! You showed excellent mastery.";
+            } else {
+                 messageEl.textContent = "Good effort! Review the study materials and try again.";
+            }
+
+            // Update High Scores (using the length of the *first* quiz for general scoring)
+            if (totalQuestions === quizzes[0].questionsData.length) {
+                if (correctAnswers > highScores[highScores.length - 1].score || highScores.length < 5) {
+                    const userName = prompt(`New High Score of ${correctAnswers}/${totalQuestions}! Enter your name:`) || "Anonymous Farmer";
+                    highScores.push({ name: userName, score: correctAnswers, percentage: percentage });
+                    renderScoreboard();
+                    showNotification(`Score saved for ${userName}!`);
+                }
+            }
+        }
+        
+        /** Resets and restarts the current quiz. */
+        function retryQuiz() {
+            startQuiz(quizzes.findIndex(q => q.title === currentQuiz.title));
+        }
+        
+        /** Returns to the quiz list view. */
+        function backToQuizzes() {
+            currentQuiz = null;
+            currentQuestionIndex = 0;
+            userAnswers = [];
+            loadQuizzes();
+        }
+        
+        // --- Initialization ---
+        document.getElementById('optimization-form').addEventListener('submit', function(e) {
+             e.preventDefault();
+             setTimeout(() => this.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true })), 0);
+        });
+
+        document.getElementById('chat-form').addEventListener('submit', handleChatSubmit);
+
+        window.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            refreshMetrics();
+            setLibraryContent('pest', document.getElementById('tab-pest')); // Initial load (Fixed)
+            populateStateData(); // Populate India states
+            
+            // Setup quiz display
+            loadQuizzes();
+            renderScoreboard();
+            updateAllocation();
+        });
+    </script>
+</body>
+</html>
