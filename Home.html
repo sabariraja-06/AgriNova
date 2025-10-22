@@ -959,11 +959,11 @@
                     <div class="neumorphic-card p-6 space-y-4 rounded-3xl">
                         <h4 class="text-xl font-bold text-gray-700 flex items-center space-x-2"><i data-lucide="layers-3" class="w-6 h-6 text-indigo-600"></i><span>Architectural Overview</span></h4>
                         <ul class="list-disc pl-5 text-gray-700 space-y-1 text-sm">
-                            <li>**Frontend:** Hybrid Mobile Application (React Native/Flutter) utilizing Neumorphic UI design for intuitive user experience.</li>
-                            <li>**Backend/API:** Python (Flask/Django) serving ML models and handling data routing.</li>
-                            <li>**Data Storage:** Scalable, secure cloud-based NoSQL database (e.g., Firestore/MongoDB) for profile and farm data.</li>
-                            <li>**IoT Communication:** Real-time data pipeline established using **MQTT Protocol** for low-latency sensor transmission.</li>
-                            <li>**Offline Capability:** Implements Service Workers and local caching to ensure core data (Library, Task Planner) is accessible without internet access.</li>
+                            <li>Frontend: Hybrid Mobile Application (React Native/Flutter) utilizing Neumorphic UI design for intuitive user experience.</li>
+                            <li>Backend/API: Python (Flask/Django) serving ML models and handling data routing.</li>
+                            <li>Data Storage: Scalable, secure cloud-based NoSQL database (e.g., Firestore/MongoDB) for profile and farm data.</li>
+                            <li>IoT Communication: Real-time data pipeline established using MQTT Protocol for low-latency sensor transmission.</li>
+                            <li>Offline Capability: Implements Service Workers and local caching to ensure core data (Library, Task Planner) is accessible without internet access.</li>
                         </ul>
                         
                         <h4 class="text-xl font-bold text-green-600 flex items-center space-x-2 pt-4"><i data-lucide="pie-chart" class="w-6 h-6"></i><span>Data Visualization & Reporting</span></h4>
@@ -971,9 +971,9 @@
                         
                         <h4 class="text-xl font-bold text-blue-600 flex items-center space-x-2 pt-4"><i data-lucide="database" class="w-6 h-6"></i><span>Data Sources and Reliability</span></h4>
                         <ul class="list-disc pl-5 text-gray-700 space-y-1 text-sm">
-                            <li>**Climate Data:** Sourced from NASA POWER (Prediction of Worldwide Energy Resources).</li>
-                            <li>**Soil Data:** Utilizes W.E.B.R.S. (World Exchange of Baseline Reference Soils) and mock farm-specific inputs.</li>
-                            <li>**Historical Yields:** Trained on large-scale datasets from organizations like the FAO (Food and Agriculture Organization).</li>
+                            <li>Climate Data: Sourced from NASA POWER (Prediction of Worldwide Energy Resources).</li>
+                            <li>Soil Data: Utilizes W.E.B.R.S. (World Exchange of Baseline Reference Soils) and mock farm-specific inputs.</li>
+                            <li>Historical Yields: Trained on large-scale datasets from organizations like the FAO (Food and Agriculture Organization).</li>
                         </ul>
                     </div>
                 </div>
@@ -1502,7 +1502,7 @@
             switch (symptom) {
                 case 'yellowing':
                     title = "Nutrient Deficiency Alert";
-                    cause = "Likely **Nitrogen (N)** or **Iron (Fe)** Deficiency (Chlorosis).";
+                    cause = "Likely Nitrogen (N) or Iron (Fe) Deficiency (Chlorosis).";
                     action = "Action: Test soil immediately to confirm. Apply a balanced foliar spray rich in N or chelated iron. Check soil pH, as high pH can lock out iron.";
                     break;
                 case 'spots':
@@ -1512,12 +1512,12 @@
                     break;
                 case 'wilt':
                     title = "Potential Root/Vascular Damage";
-                    cause = "Could be **Fusarium Wilt** (fungal) or severe drought/root-bound stress.";
+                    cause = "Could be Fusarium Wilt (fungal) or severe drought/root-bound stress.";
                     action = "Action: Check soil moisture deep down. If dry, water deeply. If moist, suspect soil-borne disease; consider removing and destroying the infected plant to prevent spread.";
                     break;
                 case 'residue':
                     title = "Pest Infestation Confirmed (Aphids/Mites)";
-                    cause = "Confirmation of soft-bodied pests like **Aphids** or **Spider Mites**. Sticky residue (honeydew) is their waste.";
+                    cause = "Confirmation of soft-bodied pests like **Aphids** or Spider Mites. Sticky residue (honeydew) is their waste.";
                     action = "Action: Apply insecticidal soap or **Neem oil spray** to the undersides of the leaves every 5-7 days. Introduce beneficial insects like ladybugs if the infestation is severe.";
                     break;
                 case 'holes':
@@ -1619,17 +1619,17 @@
             const lowerQuery = query.toLowerCase();
 
             if (lowerQuery.includes('fertilizer') || lowerQuery.includes('npk')) {
-                return "For **tomatoes** specifically, during the fruit setting phase, reduce Nitrogen and focus on high Phosphorus and Potassium (e.g., NPK 5-15-15) to encourage fruit development over leafy growth. This also helps prevent blossom end rot.";
+                return "For tomatoes specifically, during the fruit setting phase, reduce Nitrogen and focus on high Phosphorus and Potassium (e.g., NPK 5-15-15) to encourage fruit development over leafy growth. This also helps prevent blossom end rot.";
             } else if (lowerQuery.includes('pest') || lowerQuery.includes('disease')) {
-                return "If you are seeing **curled leaves and sticky residue**, it might be aphids. Try applying Neem Oil solution every 7 days. If the issue persists, use the dedicated 'Diagnosis Simulator' above for a detailed report.";
+                return "If you are seeing curled leaves and sticky residue, it might be aphids. Try applying Neem Oil solution every 7 days. If the issue persists, use the dedicated 'Diagnosis Simulator' above for a detailed report.";
             } else if (lowerQuery.includes('soil health') || lowerQuery.includes('ph')) {
-                return "Soil pH affects nutrient availability. Most crops prefer a slightly acidic to neutral range (**6.0 to 7.0**). If your pH is too low, you can add lime; if it's too high, add sulfur or organic matter.";
+                return "Soil pH affects nutrient availability. Most crops prefer a slightly acidic to neutral range (6.0 to 7.0). If your pH is too low, you can add lime; if it's too high, add sulfur or organic matter.";
             } else if (lowerQuery.includes('weather') || lowerQuery.includes('rain')) {
                 return "It's crucial to check your 7-day forecast. If heavy rain is expected, ensure your drainage systems are clear. If it's too dry, deep water early in the morning, which reduces evaporation.";
             } else if (lowerQuery.includes('thank') || lowerQuery.includes('great')) {
                  return "You're very welcome! Feel free to ask anything else about your farm. Happy farming and good luck with your crops!";
             } else {
-                return "That's a great question! AgriNova's full app version uses real-time web grounding to answer this. Based on general knowledge, focus on soil health first. Is your query related to **soil, pests, or a specific crop**?";
+                return "That's a great question! AgriNova's full app version uses real-time web grounding to answer this. Based on general knowledge, focus on soil health first. Is your query related to **soil, pests, or a specific crop?";
             }
         }
 
